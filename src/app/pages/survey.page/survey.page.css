@@ -1,0 +1,10 @@
+.imgdiv {
+  text-align: center;
+  height: 50px;
+}
+
+.img1 {
+  height: 50;
+  width: 50px;
+  cursor: pointer;
+}

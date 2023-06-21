@@ -1,0 +1,459 @@
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import * as moment from 'moment';
+import { ConfigstateService } from 'src/app/services/configstate/configstate.service';
+import { ITrustForm } from 'src/app/interfaces/trustform';
+import { FormClass } from 'src/app/classes/cform';
+import { FormsService } from 'src/app/services/forms/forms.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { WardsService } from 'src/app/services/wards/wards.service';
+import { KeycloakService } from 'keycloak-angular';
+import { combineLatest, forkJoin, Subscription } from 'rxjs';
+import { environment } from 'src/environments/environment';
+//import { jqxGridComponent } from 'jqwidgets-ng/jqxgrid';
+//import { jqxFormComponent } from 'jqwidgets-ng/jqxform';
+import { FormType } from 'src/utils/enum';
+import { Model } from "survey-core";
+
+
+const surveyJson = null;/* {
+  elements: [{
+    name: "FirstName",
+    title: "Enter your first name:",
+    type: "text"
+  }, {
+    name: "LastName",
+    title: "Enter your last name:",
+    type: "text"
+  }]
+}; */
+
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: 'survey-page',
+  templateUrl: './survey.page.html',
+  styleUrls: ['./survey.page.css']
+})
+// tslint:disable-next-line:component-class-suffix
+export class SurveyPage implements OnInit, AfterViewInit {
+  //@ViewChild('theForm', { static: false }) theForm: jqxFormComponent;
+
+  surveyModel: Model;
+  myForm: ITrustForm = new FormClass();
+  data: any;
+  title: string;
+  myjson: any;
+  resultData = {};
+  isReadOnly: string;
+  wardByParam: string = null;
+  ParentGuid: string = null;
+  today: string;
+  recordedDate: string;
+  ready = false;
+  IsMMS = false;
+  okEnabled = false;
+  nextstate: any;
+  dbDetails: any;
+  tokenParsed: any;
+  dataValues: any;
+  template: any;
+  options: any;
+  showWards = false;
+  doSurvey = false;
+  iAm: any;
+  offset = 1;
+  isResus = false;
+  myTypes = [];
+  myChoices = [];
+  formType = FormType.none;
+  appEnv = environment.appenv;
+  isOnlyMMS = false;
+  okState = 'danger';
+  resultState = 'danger';
+
+  path = '../../assets/manual.png'; // '../assests/help-miscellaneous-text-hand-thumbnail.png';
+  alttext = 'HELP!';
+
+  constructor(private configService: ConfigstateService, private formsService: FormsService,
+    public wardsService: WardsService, private route: ActivatedRoute, private router: Router,
+    private kc: KeycloakService) {
+    moment.locale('en-gb');
+    this.ParentGuid = this.route.snapshot.paramMap.get('guid');
+    this.isReadOnly = this.route.snapshot.paramMap.get('readOnly');
+    this.wardByParam = this.route.snapshot.paramMap.get('ward');
+    this.nextstate = this.configService.state;
+    if (this.wardByParam !== null) {
+      this.nextstate.config.root.formname = 'mms2';
+    }
+  }
+
+  ngAfterViewInit() {
+    this.appEnv = 'PRD';  // force prd for Live testing
+  }
+
+  ngOnInit() {
+
+    this.myForm = (this.configService.state.config.root.data as any).formDetail;
+    this.title = this.myForm.name;
+    this.myjson = this.myForm.form;
+    this.iAm = this.configService.state.config.root.data.Token.name;
+
+    if (this.isReadOnly !== null) {     // assumption of ONLY mms/2 when readonly?
+      this.myjson.pages.find(pg => pg.name === 'mms').readOnly = true;
+      this.formsService.getItemDetailByGUID('mms2', 'submissions', this.ParentGuid).toPromise().then(result => {
+        this.data = result.result;
+        this.recordedDate = result.date;
+        console.log(this.data);
+        this.goForIt();
+      });
+    } else {
+      this.goForIt();
+    }
+
+    const survey = new Model(surveyJson);
+    this.surveyModel = survey;
+  }
+
+
+  ImageClick() {
+    this.router.navigate(['manualPage']);
+  }
+
+
+  changeformType($event) {
+    const _this = this;
+    _this.formType = $event.target.value;
+    this.resultState = 'success';
+    if (_this.formType !== FormType.mms) {
+      _this.isResus = true;
+    }
+    this.myjson.pages[0].elements[1].defaultValue = _this.formType;
+
+    this.options = [{ label: '**** Department ****', value: -99 }];
+    let groups = this.tokenParsed.Roles;
+
+    if (groups !== undefined) {
+      if (groups.length > 0) {
+        // needs server side checks on whats not done yet today.
+        groups.sort(function (a, b) { return a.localeCompare(b); });
+        this.today = moment().format('L');
+        // ToDo: needs get todays entries for EITHER MMS or for RESUS
+        this.formsService.getTodaysSubmittions(this.today, this.formType).toPromise().then((data: any[]) => {
+          console.log('-_______________________', data);
+          let tempGroups: any;
+          if (this.formType === FormType.mms) {
+            tempGroups = groups.filter(x => !x.startsWith('Resus'));
+          } else {
+            tempGroups = groups.filter(x => x.startsWith('Resus'));
+          }
+          groups = tempGroups;
+
+          groups.forEach((value: string, index: number) => {
+
+            //      console.log( '-_______________________', data );
+            const tmp = value.replace('Data Entry ', '');
+            if (data.some(e => e.ward === tmp) === false) {
+              this.options.push({ label: value, value: index });
+            } else {
+              if (this.formType === FormType.mms) {
+                this.options.push({ label: '***' + value + '***', value: index });
+              } else {
+                let newLabel = value;
+
+                if (data.some(e => e.result['Target Form'] === 'Resus Weekly Checks' && e.ward === tmp) === true) {
+                  newLabel = newLabel + '***';
+                }
+                if (data.some(e => e.result['Target Form'] === 'Resus Daily Checks' && e.ward === tmp) === true) {
+                  newLabel = '***' + newLabel;
+                }
+                this.options.push({ label: newLabel, value: index });
+              }
+            }
+            console.log(this.options);
+
+          });
+          console.log(groups);
+          this.template = [
+            {
+              bind: 'ward',
+              name: 'ward',
+              type: 'option',
+              label: 'Department',
+              required: true,
+              labelWidth: '120px',
+              width: '250px',
+
+              component: 'jqxDropDownList',
+              options: this.options,
+              dropDownHeight: '6',
+              autoDropDownHeight: false,
+            }
+          ];
+          setTimeout(() => this.showWardChoices(), 1000);
+
+        }
+        );
+      } else {
+        // console.log( groups.length );
+        this.dataValues = { label: groups[0], value: 0 };
+        this.ready = true;
+        this.nextstate.config.root.currentRole = this.dataValues.label;
+        this.configService.updateState(this.nextstate, 'Showform 98');
+        this.doWardSelected(this.dataValues.label);
+      }
+    }
+
+
+  }
+
+  showWardChoices() {
+    this.showWards = true;
+    this.iAmReady();
+  }
+
+  goForIt() {
+
+    this.dbDetails = this.myForm.database;
+    this.tokenParsed = this.nextstate.config.root.data.Token;
+    this.nextstate.config.root.showHeader = this.myForm.showHeader;
+    this.nextstate.config.root.useRoles = this.myForm.useRoles;
+    this.configService.updateState(this.nextstate, 'ShowForm line 72');
+    if (this.IsMMS) {
+      // Set up to Do an MMS/Resus form
+      if (this.wardByParam !== null) {  // this is an Auditors request to do a single ward mms Audit result.
+        this.dataValues = { label: this.wardByParam, value: 0 };
+        this.nextstate.config.root.currentRole = this.dataValues.label;
+        this.configService.updateState(this.nextstate, 'Showform 60');
+        this.doWardSelected(this.wardByParam);
+      } else {
+        // Otherwise it is a normal daily data entry of mms/Resus.
+
+        if (this.myForm.useRoles === true) {
+          this.ready = true;
+        } else {
+          this.iAmReady();
+        }
+      }
+
+    } else {
+      this.iAmReady();
+    }
+    //    this.iAmReady();
+  }
+
+  BindingComplete($event) {
+    console.log('ToDo');
+  }
+
+  iAmReady() {
+
+    if (this.nextstate.config.root.useRoles) {
+      if (this.nextstate.config.root.currentRole !== null) {
+        this.doSurvey = true;
+      } else {
+        this.doSurvey = false;
+      }
+    } else {
+      this.doSurvey = true;
+    }
+    this.ready = true;
+    console.log('GO!');
+    console.log(this.nextstate);
+  }
+
+
+  doWardSelected(wardName: string) {
+    console.log('Processing ward: ', wardName);
+
+    //let ward: any;
+    //let types: any;
+    let subs: Subscription;
+
+    this.myChoices.length = 0;
+    this.myTypes.length = 0;
+
+    const wards = this.wardsService.GetOneWard(wardName);
+    const formTypes = this.formsService.getRandom('forms', 'typeDefinitions', '"version": 2');
+    // changed Version number to 2 for the TypeDefinitions.
+    forkJoin([
+      wards, formTypes
+    ]).subscribe((([ward, types])=>{
+      
+      complete: () => {  // build up list of Question Sections to be displayed.
+        const _this = this;
+        if (_this.isResus) {
+          // is it a YYN style ward
+          let myPageRef = ward.Resus;
+          let ynyFlags = '';
+          if (ward.Resus.substr(3, 1) === '-') {
+            myPageRef = ward.Resus.slice(4);
+            ynyFlags = ward.Resus.substr(0, 3);
+          }
+          const myPage = this.myjson.pages.find(x => x.name === myPageRef);
+          myPage.visible = true;
+          this.myjson.pages[0].visible = false;
+          if (this.appEnv === 'uat') {
+            this.dbDetails.collection = 'resusUAT';
+          } else {
+            this.dbDetails.collection = 'resus';
+          }
+          this.myjson.calculatedValues[0].expression = myPage.name;
+          this.myjson.calculatedValues[2].expression = ward.daily.toString();
+          this.myjson.calculatedValues[3].expression = ward.Resus.substr(0, 1);
+          this.myjson.calculatedValues[4].expression = ward.Resus.substr(1, 1);
+          this.myjson.calculatedValues[5].expression = ward.Resus.substr(2, 1);
+          this.myjson.calculatedValues[6].expression = '\'' + ward.WardName.substring(8, 99).toString() + '\'';
+          // this.dbDetails = this.myForm.database
+
+        } else {
+          this.myjson.calculatedValues[0].expression = 'mms';
+          types.choices.forEach(function (el: any) {
+            _this.myChoices.push({ value: el.value, text: el.text });
+            if (ward[el.bgValue] === true) {
+              _this.myTypes.push(el.value);
+            }
+          });
+          this.myjson.pages[0].visible = false;
+          this.myjson.pages[1].visible = false;
+          this.myjson.pages[2].visible = true;
+          this.myjson.pages[2].elements[0].defaultValue = this.myTypes;
+          this.myjson.pages[2].elements[0].choices = this.myChoices;
+        }
+
+
+
+
+        if (this.isReadOnly) {  // View existing data
+          this.myjson.description = 'MMS - Viewing entry for ' + ward.WardName + ' recorded on ' + this.recordedDate;
+          this.myjson.title = 'Medicines Management System - historical data viewer.';
+          this.myjson.completeText = 'Back';
+        } else {
+          if (this.isResus) {
+            this.myjson.title = 'Resus Audit System ' + this.appEnv;
+            this.myjson.description = 'Resus - New entry for ' + ward.WardName + ' on '
+              + (new Date().toLocaleDateString('en-GB'));
+          } else {
+            this.myjson.title = 'Medicines Management System ' + this.appEnv;
+            this.myjson.description = 'MMS - New entry for ' + ward.WardName + ' on '
+              + (new Date().toLocaleDateString('en-GB'));
+          }
+
+          this.myjson.completeText = 'Save';
+        }
+        this.nextstate.config.root.data.ward = ward;
+        this.nextstate.config.root.currentRole = wardName;
+        this.configService.updateState(this.nextstate, 'ShowForm 200');
+        this.doSurvey = true;
+        this.ready = true;
+      }
+    }));
+    // subs.unsubscribe();
+    console.log(wardName);
+  }
+
+  formDataChanged($event: { args: any }) {
+    // Change to allow all IF isResus === true
+    if ($event.args.index !== 0) {
+      this.dataValues = this.options[$event.args.index]; // $event.args.index];
+      if (((this.dataValues.label[0] === '*') && (this.formType !== FormType.weeklyResus))) {
+        this.okEnabled = false;
+        this.okState = 'danger';
+      } else {
+        this.okEnabled = true;
+        this.okState = 'success';
+      }
+    } else {
+      this.okEnabled = false;
+      this.okState = 'danger';
+    }
+  }
+
+  onClickWeekly($event) {
+    if (this.formType === 'MMS') {
+    } else {
+      this.router.navigate(['weekly']);
+    }
+  }
+
+
+
+  onClickreport($event) {
+    if (this.formType === 'MMS') {
+      window.open('https://bi.tst.nhs.uk/pbireports/powerbi/Published%20Reports/Medicines%E2%80%99%20Security%20Dashboard?rs:embed=true',
+        '_blank');
+    } else {
+      window.open('https://bi.tst.nhs.uk/pbireports/powerbi/Published%20Reports/Resus%20Medicines%E2%80%99%20Security%20Dashboard',
+        '_blank');
+    }
+  }
+
+
+  // A ward has been selected
+  onClickDoWard($event: { currentTarget: { textContent: string; }; }) {
+    if ($event.currentTarget.textContent === 'OK') {
+      if (this.dataValues.label.startsWith('***')) {
+        this.myForm.form.calculatedValues[1].expression = true;
+      }
+      const wardName = this.dataValues.label.replace('Data Entry ', '').replace('***', '').replace('***', '');
+      this.doWardSelected(wardName);
+    }
+  }
+
+
+  sendData(result) {
+
+    if (this.nextstate.config.root.isAppMode === true || this.wardByParam !== null) {
+      if (!this.isReadOnly) {
+        const myResults: any = {};
+        myResults.result = result;
+        myResults.result.Domains = null;
+        const details: any = {};
+        details.name = this.tokenParsed.given_name + ' ' + this.tokenParsed.family_name;
+        details.formName = this.nextstate.config.root.formname;
+        if (this.tokenParsed.hasOwnProperty('email')) {
+          details.email = this.tokenParsed.email;
+        } else {
+          details.email = '';
+        }
+        // ToDo: details.sendEmail = true;  // Needs to be a flag on the FormDefinition that sets this and details of who?
+        if (this.nextstate.config.root.formname.startsWith('mms')) {
+          details.ward_ID = { $oid: this.nextstate.config.root.data.ward.Id };
+        }
+
+
+        myResults.database = this.dbDetails;
+        if (this.configService.state.config.root.currentRole !== null) {
+          myResults.ward = this.configService.state.config.root.currentRole;
+        }
+        if (this.wardByParam !== null) {
+          myResults.addAsAudit = this.ParentGuid;
+        }
+        if (this.isResus) {
+          if (result.Comment) {
+            details.sendEmail = {
+              to: this.nextstate.config.root.ResusEmailsTo,
+              subject: 'Audit comment for ' + result['Target Form'] + ' ' + myResults.ward.replace('Resus', '')
+            };
+          }
+        }
+
+        myResults.details = details;
+        this.formsService.postFormResponses(myResults).subscribe(resp => {
+          console.log(resp, new Date());
+          //          this.kc.clearToken();
+          this.kc.logout().then(() => {
+            this.router.navigate(['Audit']);
+            // this.kc.clearToken();
+          });
+          //           this.kc.logout().then(() => this.kc.clearToken());
+          if (this.isResus) {
+            //  this.router.navigate(['results']);
+          }
+        });
+      } else {
+        //  this.location.back(); /// ToDo what happens now after a readonly view?
+      }
+    } else {
+      //  this.resultData = result;
+    }
+  }
+}

@@ -1,0 +1,57 @@
+<div *ngIf="this.ready">
+  <div *ngIf="this.doSurvey===false; then showSelector else showSurvey">
+  </div>
+</div>
+
+<ng-template #showSelector>
+
+  <div id="outPopUp">
+    <div class="imgdiv">
+      <img src="{{path}}" alt="{{alttext}}" (click)="ImageClick()" class=" img1">
+    </div>
+
+    <div class="center text-warning">Welcome {{this.iAm}}</div>
+    <div class="center text-warning">
+      <ng-container *ngIf="this.nextstate.config.root.hasMMS">
+        <input [disabled]="this.formType !== 'none'" type="radio" id="MMS" name="formType" value="MMS"
+          (change)="changeformType($event)" [checked]="this.isOnlyMMS">
+        <label for="MMS">&nbsp;&nbsp;MMS&nbsp;&nbsp;&nbsp;</label>
+      </ng-container>
+      <ng-container *ngIf="this.nextstate.config.root.hasResus">
+        <input [disabled]="this.formType !== 'none'" type="radio" id="DAILY" name="formType" value="Resus Daily Checks"
+          (change)="changeformType($event)">
+        <label for="DAILY">&nbsp;&nbsp;Resus Daily&nbsp;&nbsp;&nbsp;</label>
+        <input [disabled]="this.formType !== 'none'" type="radio" id="WEEKLY" name="formType"
+          value="Resus Weekly Checks" (change)="changeformType($event)">
+        <label for="WEEKLY">&nbsp;&nbsp;Resus Weekly</label>
+      </ng-container>
+    </div><br>
+    <div *ngIf="this.showWards">
+      <div style=" margin-left: 80px;">
+        <!--<jqxDropDownList id="droper" [selectedIndex]="0" (onChange)="formDataChanged($event)" [source]="this.options"
+          [width]="260" [height]="30"> (onBindingComplete)="BindingComplete($event)"
+        </jqxDropDownList> -->
+      </div>
+    </div>
+    <div class="sub_div">
+      <!--<jqxButton #okButton class="ok" style=" margin-right: 10px;" [width]="80" (onClick)="onClickDoWard($event)"
+        [disabled]="!this.okEnabled" [template]="this.okState">OK</jqxButton>
+      <jqxButton #cancelButton class="Report" style="display: inline-block; margin-right: 10px;" [width]="120"
+        (onClick)="onClickreport($event)" [template]="this.resultState" [disabled]="!this.showWards">
+        Dashboard
+      </jqxButton>
+      <jqxButton *ngIf="this.isResus" #Weeklystats class="Weeklystats" style="display: inline-block;" [width]="100"
+        (onClick)="onClickWeekly($event)" [template]="this.resultState" [disabled]="!this.showWards">
+        Weeklys
+      </jqxButton> -->
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #showSurvey style="padding-left: 10px;">
+  <div class="container">
+    <survey [model]="surveyModel" (submitSurvey)="sendData($event)"></survey>
+  </div>
+  <!--<div> Result: {{this?.resultData | json}} </div>-->
+</ng-template>

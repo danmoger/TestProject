@@ -1,0 +1,27 @@
+{
+  "root": {
+    "mongoDBURL": "reduntant",
+    "keyCloakUrl": "https://sso.tst.nhs.uk/auth",
+    "production": false,
+    "dataUrl": "https://mph-mmsapi.tst.nhs.uk/api/",
+    "PostFormDataURl": "forms/PostFormData",
+    "saveFormDefinition": "forms/SaveFormDefinition",
+    "PostWardUpdateDataURL": "ward/update",
+    "PostWardCreateDataURL": "ward/create",
+    "currentRole": null,
+    "showHeader": true,
+    "formname": null,
+    "useRoles": false,
+    "isAuditor": false,
+    "isAdministrator": false,
+    "isCreator": false,
+    "default": null,
+    "isAppMode": false,
+    "devMode": true,
+    "isResusEnabled": true,
+    "ResusEmailsTo": "kevin.koloska@SomersetFT.nhs.uk",
+    "MMSDasboardURL": "https://bi.tst.nhs.uk/pbireports/powerbi/Published%20Reports/Medicines%E2%80%99%20Security%20Dashboard?rs:embed=true",
+    "ResusDasboardURL": "",
+    "data": {}
+  }
+}
