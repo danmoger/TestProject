@@ -181,7 +181,6 @@ export class SurveyPage implements OnInit, AfterViewInit {
               required: true,
               labelWidth: '120px',
               width: '250px',
-
               component: 'jqxDropDownList',
               options: this.options,
               dropDownHeight: '6',
