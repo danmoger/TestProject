@@ -188,7 +188,6 @@ export class SurveyPage implements OnInit, AfterViewInit {
             }
           ];
           setTimeout(() => this.showWardChoices(), 1000);
-
         }
         );
       } else {
