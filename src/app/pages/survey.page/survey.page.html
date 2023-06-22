@@ -26,24 +26,17 @@
         <label for="WEEKLY">&nbsp;&nbsp;Resus Weekly</label>
       </ng-container>
     </div><br>
-    <div *ngIf="this.showWards">
-      <div style=" margin-left: 80px;">
-        <!--<jqxDropDownList id="droper" [selectedIndex]="0" (onChange)="formDataChanged($event)" [source]="this.options"
-          [width]="260" [height]="30"> (onBindingComplete)="BindingComplete($event)"
-        </jqxDropDownList> -->
+    <div *ngIf="showWards">
+      <div style="margin-left: 80px;">
+        <select id="droper" (change)="formDataChanged($event)" [disabled]="!options" [style.width.px]="260" [style.height.px]="30">
+          <option *ngFor="let option of options; let i = index" [selected]="i === 0" [value]="option.value">{{ option.label }}</option>
+        </select>
       </div>
     </div>
     <div class="sub_div">
-      <!--<jqxButton #okButton class="ok" style=" margin-right: 10px;" [width]="80" (onClick)="onClickDoWard($event)"
-        [disabled]="!this.okEnabled" [template]="this.okState">OK</jqxButton>
-      <jqxButton #cancelButton class="Report" style="display: inline-block; margin-right: 10px;" [width]="120"
-        (onClick)="onClickreport($event)" [template]="this.resultState" [disabled]="!this.showWards">
-        Dashboard
-      </jqxButton>
-      <jqxButton *ngIf="this.isResus" #Weeklystats class="Weeklystats" style="display: inline-block;" [width]="100"
-        (onClick)="onClickWeekly($event)" [template]="this.resultState" [disabled]="!this.showWards">
-        Weeklys
-      </jqxButton> -->
+      <button #okButton class="ok" style="margin-right: 10px;" [disabled]="!okEnabled" [style.width.px]="80" (click)="onClickDoWard($event)">{{ okState }}</button>
+      <button #cancelButton class="Report" style="display: inline-block; margin-right: 10px;" [style.width.px]="120" (click)="onClickreport($event)" [disabled]="!showWards">{{ resultState }}</button>
+      <button *ngIf="isResus" #Weeklystats class="Weeklystats" style="display: inline-block;" [style.width.px]="100" (click)="onClickWeekly($event)" [disabled]="!showWards">{{ resultState }}</button>
     </div>
   </div>
 </ng-template>

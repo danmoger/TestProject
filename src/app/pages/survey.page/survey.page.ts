@@ -9,8 +9,6 @@ import { WardsService } from 'src/app/services/wards/wards.service';
 import { KeycloakService } from 'keycloak-angular';
 import { combineLatest, forkJoin, Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
-//import { jqxGridComponent } from 'jqwidgets-ng/jqxgrid';
-//import { jqxFormComponent } from 'jqwidgets-ng/jqxform';
 import { FormType } from 'src/utils/enum';
 import { Model } from "survey-core";
 
@@ -109,8 +107,6 @@ export class SurveyPage implements OnInit, AfterViewInit {
       this.goForIt();
     }
 
-    const survey = new Model(surveyJson);
-    this.surveyModel = survey;
   }
 
 
@@ -262,19 +258,23 @@ export class SurveyPage implements OnInit, AfterViewInit {
   doWardSelected(wardName: string) {
     console.log('Processing ward: ', wardName);
 
-    //let ward: any;
-    //let types: any;
+    let ward: any;
+    let types: any;
     let subs: Subscription;
+
+    // changed Version number to 2 for the TypeDefinitions.
+    const observable = forkJoin([
+      this.wardsService.GetOneWard(wardName),
+      this.formsService.getRandom('forms', 'typeDefinitions', '"version": 2')
+    ]);
 
     this.myChoices.length = 0;
     this.myTypes.length = 0;
-
-    const wards = this.wardsService.GetOneWard(wardName);
-    const formTypes = this.formsService.getRandom('forms', 'typeDefinitions', '"version": 2');
-    // changed Version number to 2 for the TypeDefinitions.
-    forkJoin([
-      wards, formTypes
-    ]).subscribe((([ward, types])=>{
+    subs = observable.subscribe({
+      next: value => {
+        ward = value[0];
+        types = value[1];
+      },
       
       complete: () => {  // build up list of Question Sections to be displayed.
         const _this = this;
@@ -304,7 +304,7 @@ export class SurveyPage implements OnInit, AfterViewInit {
 
         } else {
           this.myjson.calculatedValues[0].expression = 'mms';
-          types.choices.forEach(function (el: any) {
+          types[0].choices.forEach(function (el: any) {
             _this.myChoices.push({ value: el.value, text: el.text });
             if (ward[el.bgValue] === true) {
               _this.myTypes.push(el.value);
@@ -316,8 +316,6 @@ export class SurveyPage implements OnInit, AfterViewInit {
           this.myjson.pages[2].elements[0].defaultValue = this.myTypes;
           this.myjson.pages[2].elements[0].choices = this.myChoices;
         }
-
-
 
 
         if (this.isReadOnly) {  // View existing data
@@ -342,26 +340,66 @@ export class SurveyPage implements OnInit, AfterViewInit {
         this.configService.updateState(this.nextstate, 'ShowForm 200');
         this.doSurvey = true;
         this.ready = true;
+
+        const survey = new Model(this.myjson);
+        survey.onComplete.add((sender, options) => {
+          this.sendData(sender.data);
+        });
+        survey.onUpdateQuestionCssClasses
+        .add(function (survey, options) {
+          const classes = options.cssClasses;
+          //                 console.log( survey, options );
+          classes.root = 'sq-root';
+          classes.title = 'sq-title';
+          classes.item = 'sq-item';
+          classes.label = 'sq-label';
+
+          if (options.question.isRequired) {
+            classes.title = 'sq-title sq-title-required';
+            classes.root = 'sq-root sq-root-required';
+          }
+
+          if ((options.question.getType() === 'checkbox')) {
+            classes.root = 'sq-root sq-root-cb';
+          }
+
+          if (options.question.getType() === 'text') {
+            if (options.question.indent > 0) {
+              classes.root = 'sq-root sq-root-txt';
+            } else {
+              classes.root = 'sq-root sq-root-txtin';
+            }
+          }
+          if (options.question.title.startsWith('***')) {
+            classes.title = 'sq-title my-redtext';
+          } else if (options.question.title.startsWith('**')) {
+            classes.title = 'sq-title my-bluetext';
+          } else if (options.question.title.startsWith('*')) {
+            classes.title = 'sq-title my-greentext';
+          }
+        });
+        this.surveyModel = survey;
       }
-    }));
+    });
     // subs.unsubscribe();
     console.log(wardName);
   }
 
-  formDataChanged($event: { args: any }) {
+  formDataChanged(event: Event) {
+    const selectedIndex = (event.target as HTMLSelectElement).selectedIndex;
     // Change to allow all IF isResus === true
-    if ($event.args.index !== 0) {
-      this.dataValues = this.options[$event.args.index]; // $event.args.index];
+    if (selectedIndex !== 0) {
+      this.dataValues = this.options[selectedIndex];
       if (((this.dataValues.label[0] === '*') && (this.formType !== FormType.weeklyResus))) {
         this.okEnabled = false;
-        this.okState = 'danger';
+        this.okState = 'it not ok';
       } else {
         this.okEnabled = true;
-        this.okState = 'success';
+        this.okState = 'OK';
       }
     } else {
       this.okEnabled = false;
-      this.okState = 'danger';
+      this.okState = 'it not ok';
     }
   }
 
@@ -386,7 +424,7 @@ export class SurveyPage implements OnInit, AfterViewInit {
 
 
   // A ward has been selected
-  onClickDoWard($event: { currentTarget: { textContent: string; }; }) {
+  onClickDoWard($event: any) {
     if ($event.currentTarget.textContent === 'OK') {
       if (this.dataValues.label.startsWith('***')) {
         this.myForm.form.calculatedValues[1].expression = true;
@@ -397,7 +435,7 @@ export class SurveyPage implements OnInit, AfterViewInit {
   }
 
 
-  sendData(result) {
+  public sendData(result) {
 
     if (this.nextstate.config.root.isAppMode === true || this.wardByParam !== null) {
       if (!this.isReadOnly) {

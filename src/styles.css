@@ -1,10 +1,10 @@
 @import "~bootstrap/dist/css/bootstrap.css";
 @import "~bootstrap-icons/font/bootstrap-icons.css";
 
-body{
+ /*body{
     padding: 0;
     margin: 0;
-    /* background-color: rgb(255, 248, 239); */
+    /* background-color: rgb(255, 248, 239); 
     background-color: #f8f3f2;
 }
 
@@ -14,4 +14,176 @@ body{
     list-style: none;
     text-decoration: none;
     font-family: Calibri;
+} */
+
+
+html,
+body {
+  height: 100%;
+}
+
+.sd-row__question{
+    white-space: break-spaces !important;
+}
+ 
+
+.sv_row .sv_qstn h5 {
+  color: darkviolet;
+}
+
+ 
+
+.sv_row .sv_qstn {
+  margin-bottom: 0px !important;
+}
+
+ 
+
+.sv_main .sv_custom_header {
+  display: none !important;
+}
+
+ 
+
+.container {
+  height: 100%;
+  /* display: flex; */
+  justify-content: center;
+  align-items: center;
+}
+
+div .sd-panel.sd-row__panel{
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.sv_main .sv_container .sv_body .sv_p_root .sv_q {
+  padding-top: 0em !important;
+  padding-bottom: 0em !important;
+}
+
+sv-ng-html-question div.sq-root {
+    white-space: break-spaces !important;
+}
+
+div sv-title-actions__title{
+    white-space: break-spaces !important;
+}
+
+span.sv-string-viewer{
+    white-space: break-spaces !important;
+}
+
+.sq-root-txt {
+  border: 1px solid gray !important;
+  border-left: 4px solid crimson !important;
+  border-radius: 5px !important;
+  padding: 10px !important;
+  margin-bottom: 30px !important;
+  margin-top: 0px !important;
+}
+
+ 
+
+.sq-label {
+  margin-left: 30px;
+}
+
+ 
+
+.sq-item:nth-child(1) {
+  margin-bottom: 5px;
+}
+
+ 
+
+.sq-root-txtin {
+  border: 1px solid gray !important;
+  border-left: 4px solid #18a689 !important;
+  border-radius: 5px !important;
+  padding: 10px !important;
+  margin-bottom: 10px !important;
+  margin-top: 0px !important;
+}
+
+ 
+
+.sq-title {
+  font-size: 20px;
+  margin-left: 20px;
+  white-space: break-spaces !important;
+}
+
+.sv_bootstrap_css .sv_qstn {
+  padding-top: 1px !important;
+  padding-bottom: 2px !important;
+}
+
+ 
+
+
+fieldset.sq-root.sq-root-required {
+  border: 1px solid gray;
+  border-left: 4px solid #18a689;
+  border-radius: 5px;
+  padding: 2px;
+  margin-bottom: 10px;
+}
+
+.sv_main .sv_container .sv_body .sv_p_root .sv_p_title {
+  font-weight: bold !important;
+  font-size: 2em !important;
+  margin: .5em 0 0 0 !important;
+  background-color: #b3b3b3;
+}
+
+ 
+
+.my-redtext {
+  color: red !important;
+}
+
+ 
+
+.my-bluetext {
+  color: blue !important;
+}
+
+.my-greentext {
+  color: green !important;
+}
+
+ 
+
+.mydispRow {
+  font-size: 2em;
+}
+
+#outPopUp {
+  position: absolute;
+  width: 450px;
+  height: 250px;
+  z-index: 15;
+  top: 50%;
+  left: 50%;
+  margin: -100px 0 0 -225px;
+  padding: 20px 20px;
+  background: white;
+}
+
+ 
+
+.center {
+  border: 15px;
+  text-align: center;
+}
+
+ 
+
+.sub_div {
+  position: absolute;
+  bottom: 0px;
+  text-align: center;
+  width: 99%;
+  padding: 20px 20px;
 }
