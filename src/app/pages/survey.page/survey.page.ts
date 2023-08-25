@@ -11,6 +11,7 @@ import { combineLatest, forkJoin, Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { FormType } from 'src/utils/enum';
 import { Model } from "survey-core";
+import * as Survey from 'survey-core';
 
 
 const surveyJson = null;/* {
@@ -25,6 +26,9 @@ const surveyJson = null;/* {
   }]
 }; */
 
+Survey.JsonObject.metaData.addProperty('questionbase', 'popupdescription:text');
+Survey.JsonObject.metaData.addProperty('page', 'popupdescription:text');
+
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'survey-page',
@@ -35,6 +39,8 @@ const surveyJson = null;/* {
 export class SurveyPage implements OnInit, AfterViewInit {
   //@ViewChild('theForm', { static: false }) theForm: jqxFormComponent;
 
+  
+  
   surveyModel: Model;
   myForm: ITrustForm = new FormClass();
   data: any;
@@ -66,7 +72,8 @@ export class SurveyPage implements OnInit, AfterViewInit {
   appEnv = environment.appenv;
   isOnlyMMS = false;
   okState = 'danger';
-  resultState = 'danger';
+  resultState = false;
+  Nos = 0;
 
   path = '../../assets/manual.png'; // '../assests/help-miscellaneous-text-hand-thumbnail.png';
   alttext = 'HELP!';
@@ -80,8 +87,9 @@ export class SurveyPage implements OnInit, AfterViewInit {
     this.wardByParam = this.route.snapshot.paramMap.get('ward');
     this.nextstate = this.configService.state;
     if (this.wardByParam !== null) {
-      this.nextstate.config.root.formname = 'mms2';
+      this.nextstate.config.root.formname = 'mmsResus';
     }
+    
   }
 
   ngAfterViewInit() {
@@ -89,7 +97,7 @@ export class SurveyPage implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-
+    Survey.FunctionFactory.Instance.register('NumberOfNos', (params) => { return this.Nos; });
     this.myForm = (this.configService.state.config.root.data as any).formDetail;
     this.title = this.myForm.name;
     this.myjson = this.myForm.form;
@@ -106,19 +114,17 @@ export class SurveyPage implements OnInit, AfterViewInit {
     } else {
       this.goForIt();
     }
-
   }
-
 
   ImageClick() {
     this.router.navigate(['manualPage']);
   }
 
-
   changeformType($event) {
     const _this = this;
     _this.formType = $event.target.value;
-    this.resultState = 'success';
+    this.resultState = true;
+    console.log(this.resultState)
     if (_this.formType !== FormType.mms) {
       _this.isResus = true;
     }
@@ -247,7 +253,12 @@ export class SurveyPage implements OnInit, AfterViewInit {
         this.doSurvey = false;
       }
     } else {
+      const survey = new Model(this.myjson);
+      this.surveyModel = survey;
       this.doSurvey = true;
+      survey.onComplete.add((sender, options) => {
+        this.sendData(sender.data);
+      });
     }
     this.ready = true;
     console.log('GO!');
@@ -265,7 +276,7 @@ export class SurveyPage implements OnInit, AfterViewInit {
     // changed Version number to 2 for the TypeDefinitions.
     const observable = forkJoin([
       this.wardsService.GetOneWard(wardName),
-      this.formsService.getRandom('forms', 'typeDefinitions', '"version": 2')
+      this.formsService.getRandom('forms', 'typeDefinitions', '"version": 3')
     ]);
 
     this.myChoices.length = 0;
@@ -342,6 +353,40 @@ export class SurveyPage implements OnInit, AfterViewInit {
         this.ready = true;
 
         const survey = new Model(this.myjson);
+        survey.onAfterRenderQuestion.add((survey, options) => {
+          if (!options.question['popupdescription']) {
+            return;
+          }
+          // Add a button;
+          const btn = document.createElement('button');
+          btn.className = 'btn btn-info btn-xs';
+          btn.innerHTML = 'More Info';
+          btn.onclick = function () {
+            // showDescription(question);
+            alert(options.question['popupdescription']);
+          };
+          const header = options.htmlElement.querySelector('h5');
+          const span = document.createElement('span');
+          span.innerHTML = '  ';
+          header.appendChild(span);
+          header.appendChild(btn);
+        });
+        
+        survey.onValueChanging.add((s:any, opts) => {
+          const _that = this;
+          if (s.variablesHash.resuspage !== 'mms') {
+            if (opts.question.getType() === 'radiogroup') {
+              if (opts.oldValue === undefined && opts.value === 'NO') {
+                _that.Nos += 1;
+              } else if (opts.oldValue === 'Yes' && opts.value === 'NO') {
+                _that.Nos += 1;
+              } else if (opts.oldValue === 'NO' && opts.value === 'Yes') {
+                _that.Nos -= 1;
+              }
+            }
+            console.log(opts);
+          }
+        });
         survey.onComplete.add((sender, options) => {
           this.sendData(sender.data);
         });
@@ -392,14 +437,14 @@ export class SurveyPage implements OnInit, AfterViewInit {
       this.dataValues = this.options[selectedIndex];
       if (((this.dataValues.label[0] === '*') && (this.formType !== FormType.weeklyResus))) {
         this.okEnabled = false;
-        this.okState = 'it not ok';
+        //this.okState = 'it not ok';
       } else {
         this.okEnabled = true;
-        this.okState = 'OK';
+        //this.okState = 'OK';
       }
     } else {
       this.okEnabled = false;
-      this.okState = 'it not ok';
+      //this.okState = 'it not ok';
     }
   }
 

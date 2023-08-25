@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { SurveyModule } from "survey-angular-ui";
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 import { FormsService } from './services/forms/forms.service';
 import { ConfigstateService } from './services/configstate/configstate.service';
@@ -14,6 +15,7 @@ import { WeeklyComponent } from './pages/reports/weekly/weekly.component';
 import { SurveyPage } from './pages/survey.page/survey.page'
 
 import { initializer } from '../utils/app-init';
+import { ManualPageComponent } from './pages/manual-page/manual-page.component';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -35,14 +37,16 @@ function initializeKeycloak(keycloak: KeycloakService) {
     AppComponent,
     HeaderComponent,
     WeeklyComponent,
-    SurveyPage
+    SurveyPage,
+    ManualPageComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     KeycloakAngularModule,
     HttpClientModule,
-    SurveyModule
+    SurveyModule,
+    PdfViewerModule
   ],
   providers: [
     {

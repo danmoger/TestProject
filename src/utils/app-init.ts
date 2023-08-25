@@ -20,7 +20,7 @@ export function initializer(forms: FormsService, http: HttpClient, keycloak: Key
     appConfig: ConfigstateService): () => Promise<any> {
     let formDetail = '';
     let kcConfig: KeycloakConfig = null;
-    const myFormName = 'mmsResus'; //  getQueryParameter('FormName'); // mmsResus
+    let myFormName = getQueryParameter('FormName'); // mmsResus
     console.log('Starting.....');
 
     let myRes = null;
@@ -39,8 +39,8 @@ export function initializer(forms: FormsService, http: HttpClient, keycloak: Key
                             console.log('Prod mode Enabled');
                         }
                         if (myFormName === null) {
-                            //                           myFormName = myRes.root.default;
-                            myRes.root.isAppMode = false;
+                            myFormName = myRes.root.default;
+                            myRes.root.isAppMode = true;
                         } else {
                             myRes.root.isAppMode = true;
                         }

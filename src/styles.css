@@ -31,7 +31,6 @@ body {
   color: darkviolet;
 }
 
- 
 
 .sv_row .sv_qstn {
   margin-bottom: 0px !important;
@@ -66,8 +65,21 @@ sv-ng-html-question div.sq-root {
     white-space: break-spaces !important;
 }
 
-div sv-title-actions__title{
+sv-title-actions{
+    display: block !important;
+}
+
+.sv-title-actions .sv-title-actions__title{
+    max-width: fit-content !important;
+}
+
+div .sv-title-actions__title{
     white-space: break-spaces !important;
+
+}
+
+h5.sq-title{
+    color: darkviolet !important;
 }
 
 span.sv-string-viewer{
@@ -81,9 +93,13 @@ span.sv-string-viewer{
   padding: 10px !important;
   margin-bottom: 30px !important;
   margin-top: 0px !important;
+  width: 100%;
+  
 }
 
- 
+.sd-element--nested>.sd-panel__content {
+    padding-bottom: 0 !important;
+}
 
 .sq-label {
   margin-left: 30px;
@@ -119,7 +135,10 @@ span.sv-string-viewer{
   padding-bottom: 2px !important;
 }
 
- 
+.sd-element__header.sd-element__header--location-top.sd-panel__header {
+    background-color: #f3f3f3;
+    text-align: center;
+}
 
 
 fieldset.sq-root.sq-root-required {
@@ -184,6 +203,10 @@ fieldset.sq-root.sq-root-required {
   position: absolute;
   bottom: 0px;
   text-align: center;
-  width: 99%;
+  width: 100%;
   padding: 20px 20px;
+}
+
+.sd-panel__content{
+  border: none;
 }
