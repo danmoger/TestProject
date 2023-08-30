@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsService } from 'src/app/services/forms/forms.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'app-weekly',
@@ -11,7 +12,7 @@ export class WeeklyComponent implements OnInit {
     ready = false;
     reportsList: any;
 
-    constructor(private formsservice: FormsService) { }
+    constructor(private formsservice: FormsService, private router: Router) { }
 
     ngOnInit() {
         this.initialise();
@@ -30,4 +31,7 @@ export class WeeklyComponent implements OnInit {
                                       this.ready = true; console.log(this.reportsList); });
     }
 
+    BackToStart() {
+        this.router.navigate(['survey']);
+    }
 }

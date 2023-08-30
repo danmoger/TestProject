@@ -1,20 +1,20 @@
 .view{
-    min-height: calc(100% - 60px);
-    background-color:grey;
+    min-height: calc(100% - 90px);
     position: absolute;
     width: 100%;
     margin: auto;
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: grey;
 }
 
 .container-fluid {
     /* This is all to add the scroll to the table*/
-    position:absolute;
+    position: absolute;
     overflow-y: auto;  
     width: 95%;
-    max-height: 95%;
+    max-height: 97%;
     left: 0;
     right: 0;
     margin: auto;

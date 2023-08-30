@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import * as moment from 'moment';
 import { ConfigstateService } from 'src/app/services/configstate/configstate.service';
 import { ITrustForm } from 'src/app/interfaces/trustform';
@@ -7,24 +7,14 @@ import { FormsService } from 'src/app/services/forms/forms.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WardsService } from 'src/app/services/wards/wards.service';
 import { KeycloakService } from 'keycloak-angular';
-import { combineLatest, forkJoin, Subscription } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { FormType } from 'src/utils/enum';
 import { Model } from "survey-core";
 import * as Survey from 'survey-core';
 
 
-const surveyJson = null;/* {
-  elements: [{
-    name: "FirstName",
-    title: "Enter your first name:",
-    type: "text"
-  }, {
-    name: "LastName",
-    title: "Enter your last name:",
-    type: "text"
-  }]
-}; */
+const surveyJson = null;
 
 Survey.JsonObject.metaData.addProperty('questionbase', 'popupdescription:text');
 Survey.JsonObject.metaData.addProperty('page', 'popupdescription:text');
@@ -36,10 +26,7 @@ Survey.JsonObject.metaData.addProperty('page', 'popupdescription:text');
   styleUrls: ['./survey.page.css']
 })
 // tslint:disable-next-line:component-class-suffix
-export class SurveyPage implements OnInit, AfterViewInit {
-  //@ViewChild('theForm', { static: false }) theForm: jqxFormComponent;
-
-  
+export class SurveyPage implements OnInit, AfterViewInit {  
   
   surveyModel: Model;
   myForm: ITrustForm = new FormClass();
@@ -75,7 +62,7 @@ export class SurveyPage implements OnInit, AfterViewInit {
   resultState = false;
   Nos = 0;
 
-  path = '../../assets/manual.png'; // '../assests/help-miscellaneous-text-hand-thumbnail.png';
+  path = '../../assets/manual.png';
   alttext = 'HELP!';
 
   constructor(private configService: ConfigstateService, private formsService: FormsService,
@@ -371,7 +358,7 @@ export class SurveyPage implements OnInit, AfterViewInit {
           header.appendChild(span);
           header.appendChild(btn);
         });
-        
+
         survey.onValueChanging.add((s:any, opts) => {
           const _that = this;
           if (s.variablesHash.resuspage !== 'mms') {
@@ -522,7 +509,7 @@ export class SurveyPage implements OnInit, AfterViewInit {
           console.log(resp, new Date());
           //          this.kc.clearToken();
           this.kc.logout().then(() => {
-            this.router.navigate(['Audit']);
+            this.router.navigate(['survey']);
             // this.kc.clearToken();
           });
           //           this.kc.logout().then(() => this.kc.clearToken());

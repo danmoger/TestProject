@@ -10,8 +10,9 @@
     <div class="center">Welcome {{this.iAm}}</div>
     <div class="imgdiv" (click)="ImageClick()">
       <img src="{{path}}" alt="{{alttext}}"  class=" img1">
+      <p style="color: darkblue; font-size: small;">Click here for user guide</p>
     </div>
-    <div class="center">
+    <div class="center MmsOrResus">
       <ng-container *ngIf="this.nextstate.config.root.hasMMS">
         <input [disabled]="this.formType !== 'none'" type="radio" id="MMS" name="formType" value="MMS"
           (change)="changeformType($event)" [checked]="this.isOnlyMMS">

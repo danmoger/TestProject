@@ -19,7 +19,7 @@
     "isAppMode": false,
     "devMode": true,
     "isResusEnabled": true,
-    "ResusEmailsTo": "kevin.koloska@SomersetFT.nhs.uk",
+    "ResusEmailsTo": "neil.russell@SomersetFT.nhs.uk",
     "MMSDasboardURL": "https://bi.tst.nhs.uk/pbireports/powerbi/Published%20Reports/Medicines%E2%80%99%20Security%20Dashboard?rs:embed=true",
     "ResusDasboardURL": "",
     "data": {}
