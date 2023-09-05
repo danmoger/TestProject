@@ -85,6 +85,11 @@ export class SurveyPage implements OnInit, AfterViewInit {
 
   ngOnInit() {
     Survey.FunctionFactory.Instance.register('NumberOfNos', (params) => { return this.Nos; });
+    Survey.Serializer.addProperty('survey', {
+      name: 'Template:text',
+      default: '{}',
+      category: 'general'
+    });
     this.myForm = (this.configService.state.config.root.data as any).formDetail;
     this.title = this.myForm.name;
     this.myjson = this.myForm.form;
@@ -473,10 +478,18 @@ export class SurveyPage implements OnInit, AfterViewInit {
       if (!this.isReadOnly) {
         const myResults: any = {};
         myResults.result = result;
-        myResults.result.Domains = null;
+        delete myResults.result.Domains;
         const details: any = {};
         details.name = this.tokenParsed.given_name + ' ' + this.tokenParsed.family_name;
         details.formName = this.nextstate.config.root.formname;
+        if (this.nextstate.config.root.data.formDetail.form.hasOwnProperty('template')) {
+          details.template = this.nextstate.config.root.data.formDetail.form.template;
+          details.sendEmail = {
+            to: 'daniel.moger@somersetft.nhs.uk',
+            subject: 'Training Evaluation Form',
+            from: this.tokenParsed.email
+          };
+        }
         if (this.tokenParsed.hasOwnProperty('email')) {
           details.email = this.tokenParsed.email;
         } else {
