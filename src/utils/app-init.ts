@@ -50,10 +50,10 @@ export function initializer(forms: FormsService, http: HttpClient, keycloak: Key
                             if (myFormName.startsWith('mms')) {
                                 kcConfig.clientId = 'MMS-APP'; // Neils Fudge -' + environment.appenv;
                             } else {
-                                kcConfig.clientId = 'forms-app'; // + environment.appenv;
+                                kcConfig.clientId = 'forms-app-uat'; // + environment.appenv;
                             }
                         } else {
-                            kcConfig.clientId = 'forms-app'; // Neils Fudge -' + + environment.appenv;
+                            kcConfig.clientId = 'forms-app-uat'; // Neils Fudge -' + + environment.appenv;
                         }
                         if (isDevMode()) {
                             // kcConfig.url = myRes.root.keyCloakUrl;

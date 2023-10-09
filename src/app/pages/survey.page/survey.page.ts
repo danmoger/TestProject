@@ -14,6 +14,7 @@ import { Model } from "survey-core";
 import * as Survey from 'survey-core';
 
 
+
 const surveyJson = null;
 
 Survey.JsonObject.metaData.addProperty('questionbase', 'popupdescription:text');
@@ -485,8 +486,8 @@ export class SurveyPage implements OnInit, AfterViewInit {
         if (this.nextstate.config.root.data.formDetail.form.hasOwnProperty('template')) {
           details.template = this.nextstate.config.root.data.formDetail.form.template;
           details.sendEmail = {
-            to: 'daniel.moger@somersetft.nhs.uk',
-            subject: 'Training Evaluation Form',
+            to: 'neil.russell@somersetft.nhs.uk',
+            subject: 'Form',
             from: this.tokenParsed.email
           };
         }
