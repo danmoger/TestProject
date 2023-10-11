@@ -71,11 +71,7 @@ export class SurveyPage implements OnInit, AfterViewInit {
     this.ParentGuid = this.route.snapshot.paramMap.get('guid');
     this.isReadOnly = this.route.snapshot.paramMap.get('readOnly');
     this.wardByParam = this.route.snapshot.paramMap.get('ward');
-    this.nextstate = this.configService.state;
-    if (this.wardByParam !== null) {
-      this.nextstate.config.root.formname = 'mmsResus';
-    }
-    
+    this.nextstate = this.configService.state; 
   }
 
   ngAfterViewInit() {
@@ -83,11 +79,11 @@ export class SurveyPage implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    Survey.Serializer.addProperty('survey', {
-      name: 'Template:text',
-      default: '{}',
-      category: 'general'
-    });
+    // Survey.Serializer.addProperty('survey', {
+    //   name: 'Template:text',
+    //   default: '{}',
+    //   category: 'general'
+    // });
     this.myForm = (this.configService.state.config.root.data as any).formDetail;
     this.title = this.myForm.name;
     this.myjson = this.myForm.form;

@@ -82,53 +82,6 @@ export class FormsService {
         }), catchError(err => {
             console.log(err);
             return of([]);
-
-        }));
-    }
-
-    public getTodaysResusShortList() {
-        const dbName = this.newConfig.state.config.root.data['formDetail'].database.dbname;
-        const collection = 'resus_view_Last_Weekly' + this.resus;
-        const myUrl = this.newConfig.state.config.root.dataUrl +
-            'mongo/filterCollection?db=' + dbName + '&collection=' + collection + '&filter={}';
-        return this.http.get(myUrl).pipe(map(resp => {
-            // console.log( resp );
-            return resp;
-        }), catchError(err => {
-            console.log(err);
-            return of([]);
-        }));
-    }
-
-    public getTodaysSubmittions(today: string, fType: FormType) {
-
-        const dbName = this.newConfig.state.config.root.data['formDetail'].database.dbname;
-        let collection = '';
-        if (fType === FormType.mms) {
-            collection = this.newConfig.state.config.root.data['formDetail'].database.collection;
-        } else {
-            collection = 'resus' + this.resus; // this.newConfig.state.config.root.data['formDetail'].database.collection;
-        }
-        const myUrl = this.newConfig.state.config.root.dataUrl +
-            'mongo/filterCollection?db=' + dbName + '&collection=' + collection + '&filter={%20%22date%22:%20' + '%22' + today + '%22' +
-            '%20}';
-        return this.http.get(myUrl).pipe(map(resp => {
-            // console.log( resp );
-            return resp;
-        }), catchError(err => {
-            console.log(err);
-            return of([]);
-        }));
-    }
-
-    public GetWeeklyData(): Observable<any> {
-        const myUrl = this.newConfig.state.config.root.dataUrl + 'Dashboard/getWeekly';
-        return this.http.get(myUrl).pipe(map(resp => {
-            console.log(resp);
-            return resp;
-        }), catchError(err => {
-            console.log(err);
-            return of([]);
         }));
     }
 
@@ -136,7 +89,6 @@ export class FormsService {
         const myUrl = this.newConfig.state.config.root.dataUrl + this.newConfig.state.config.root.PostFormDataURl;
         console.log(myUrl, data);
         return this.http.post(myUrl, JSON.stringify(data), httpOptions).pipe(map((res: Response) => {
-
             return res;
         }));
     }
@@ -144,7 +96,6 @@ export class FormsService {
     public GetaForm(oid: string): Observable<any> {
         const myUrl = this.newConfig.state.config.root.dataUrl + 'forms/GetItem?oId=' + oid;
         return this.http.get(myUrl, httpOptions).pipe(map((res: Response) => {
-
             return res;
         }));
     }

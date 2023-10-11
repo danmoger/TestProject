@@ -58,26 +58,8 @@ export class ConfigstateService extends Store<ConfigstateSState> {
 
   public updateState(nextState: ConfigstateSState, msg: string = '') {
     console.log('Update State called from ', msg);
-    if (nextState.config.root.data['HasRights'] === true) {
-      nextState.config.root.showHeader = true;
-      if (nextState.config.root.data['Rights'].includes('Auditor')) {
-        console.log('Auditor');
-        nextState.config.root.isAuditor = true;
-      }
-      if (nextState.config.root.data['Rights'].includes('Administrators')) {
-        console.log('Administrators');
-        nextState.config.root.isAdministrator = true;
-      }
-      if (nextState.config.root.data['Rights'].includes('Creator')) {
-        console.log('Creators');
-        nextState.config.root.isCreator = true;
-      }
 
-
-
-    } else {
-      nextState.config.root.showHeader = false;
-    }
+    nextState.config.root.showHeader = false;
     this.setState({
       ...this.state,
       // config: nextState.config
