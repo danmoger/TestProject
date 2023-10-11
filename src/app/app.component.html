@@ -1,17 +1,16 @@
 <ng-container *ngIf="this.authenticated; then data else nothing"></ng-container>
 <ng-template #data>
   <div id="app">
-    
     <router-outlet></router-outlet>
   </div>
 </ng-template>
 <ng-template #nothing>
   <div class="page-container">
     <div class="page">
-      <h2>Medicines Management System and Resus</h2>
+      <h2>Welcome the Forms system</h2>
       <hr>
       <h4>You do not have the rights to access this page.</h4>
-      <h5>If you do not think this is correct then please request access from the ward manager/senior sister/matron.</h5>
+      <h5>If you do not think this is correct then please request access from service desk.</h5>
     </div>
   </div>
 </ng-template>

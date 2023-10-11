@@ -1,51 +1,5 @@
 <div *ngIf="this.ready">
-  <div *ngIf="this.doSurvey===false; then showSelector else showSurvey">
-  </div>
-</div>
-
-<ng-template #showSelector>
-
-  <div id="outPopUp">
-
-    <div class="center">Welcome {{this.iAm}}</div>
-    <div class="imgdiv" (click)="ImageClick()">
-      <img src="{{path}}" alt="{{alttext}}"  class=" img1">
-      <p style="color: darkblue; font-size: small;">Click here for user guide</p>
-    </div>
-    <div class="center MmsOrResus">
-      <ng-container *ngIf="this.nextstate.config.root.hasMMS">
-        <input [disabled]="this.formType !== 'none'" type="radio" id="MMS" name="formType" value="MMS"
-          (change)="changeformType($event)" [checked]="this.isOnlyMMS">
-        <label for="MMS">&nbsp;&nbsp;<b>MMS</b>&nbsp;&nbsp;&nbsp;</label>
-      </ng-container>
-      <ng-container *ngIf="this.nextstate.config.root.hasResus">
-        <input [disabled]="this.formType !== 'none'" type="radio" id="DAILY" name="formType" value="Resus Daily Checks"
-          (change)="changeformType($event)">
-        <label for="DAILY">&nbsp;&nbsp;<b>Resus Daily</b>&nbsp;&nbsp;&nbsp;</label>
-        <input [disabled]="this.formType !== 'none'" type="radio" id="WEEKLY" name="formType"
-          value="Resus Weekly Checks" (change)="changeformType($event)">
-        <label for="WEEKLY">&nbsp;&nbsp;<b>Resus Weekly</b></label>
-      </ng-container>
-    </div><br>
-    <div *ngIf="showWards">
-      <div style="margin-left: 80px;">
-        <select id="droper" (change)="formDataChanged($event)" [disabled]="!options" [style.width.px]="260" [style.height.px]="30">
-          <option *ngFor="let option of options; let i = index" [selected]="i === 0" [value]="option.value">{{ option.label }}</option>
-        </select>
-      </div>
-    </div>
-    <div class="sub_div">
-      <button #okButton class="ok SelectButtons" [disabled]="!okEnabled" [style.width.px]="80" (click)="onClickDoWard($event)" [ngClass]="{'buttonEnabled': okEnabled, 'buttonDisabled': !okEnabled}">OK</button>
-      <button #dashBoardButton class="Report SelectButtons" [style.width.px]="120" (click)="onClickreport($event)" [disabled]="!showWards" [ngClass]="{'buttonEnabled': resultState, 'buttonDisabled': !resultState}">Dashboard</button>
-      <button *ngIf="isResus" #Weeklystats class="Weeklystats SelectButtons" [style.width.px]="100" (click)="onClickWeekly($event)" [disabled]="!showWards" [ngClass]="{'buttonEnabled': resultState, 'buttonDisabled': !resultState}">Weeklys</button>
-    </div>
-  </div>
-</ng-template>
-
-
-<ng-template #showSurvey style="padding-left: 10px;">
   <div class="container">
     <survey [model]="surveyModel" (submitSurvey)="sendData($event)"></survey>
   </div>
-  <!--<div> Result: {{this?.resultData | json}} </div>-->
-</ng-template>
+</div>

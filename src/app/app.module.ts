@@ -10,8 +10,6 @@ import { ConfigstateService } from './services/configstate/configstate.service';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './_top/header/header.component';
-import { WeeklyComponent } from './pages/reports/weekly/weekly.component';
 import { SurveyPage } from './pages/survey.page/survey.page'
 
 import { initializer } from '../utils/app-init';
@@ -19,8 +17,6 @@ import { initializer } from '../utils/app-init';
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent,
-    WeeklyComponent,
     SurveyPage
   ],
   imports: [
