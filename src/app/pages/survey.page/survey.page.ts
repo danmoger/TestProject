@@ -448,8 +448,6 @@ export class SurveyPage implements OnInit, AfterViewInit {
     }
   }
 
-
-
   onClickreport($event) {
     if (this.formType === 'MMS') {
       window.open('https://bi.tst.nhs.uk/pbireports/powerbi/Published%20Reports/Medicines%E2%80%99%20Security%20Dashboard?rs:embed=true',
@@ -486,8 +484,8 @@ export class SurveyPage implements OnInit, AfterViewInit {
         if (this.nextstate.config.root.data.formDetail.form.hasOwnProperty('template')) {
           details.template = this.nextstate.config.root.data.formDetail.form.template;
           details.sendEmail = {
-            to: 'neil.russell@somersetft.nhs.uk',
-            subject: 'Form',
+            to: 'training@somersetft.nhs.uk',
+            subject: 'Training Evaluation Form',
             from: this.tokenParsed.email
           };
         }
