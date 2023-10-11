@@ -3,12 +3,9 @@ import { KeycloakConfig } from 'keycloak-js';
 import { lastValueFrom } from 'rxjs';
 import { environment } from '../environments/environment';
 import { ConfigstateService } from 'src/app/services/configstate/configstate.service';
-//import { CompileShallowModuleMetadata } from '@angular/compiler';
 import { HttpClient } from '@angular/common/http';
 import { FormsService } from 'src/app/services/forms/forms.service';
 import { isDevMode, enableProdMode } from '@angular/core';
-// import { Console } from 'console';
-// import { Console } from 'console';
 
 
 function getQueryParameter(key: string): string {

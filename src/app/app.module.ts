@@ -15,30 +15,13 @@ import { WeeklyComponent } from './pages/reports/weekly/weekly.component';
 import { SurveyPage } from './pages/survey.page/survey.page'
 
 import { initializer } from '../utils/app-init';
-import { ManualPageComponent } from './pages/manual-page/manual-page.component';
-
-function initializeKeycloak(keycloak: KeycloakService) {
-  return () =>
-    keycloak.init({
-      config: {
-        url: 'https://sso.tst.nhs.uk/auth',
-        realm: 'SIDER',
-        clientId: 'mms-app'
-      },
-      initOptions: {
-        onLoad: 'login-required',
-        checkLoginIframe: false
-      }
-    });
-}
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     WeeklyComponent,
-    SurveyPage,
-    ManualPageComponent
+    SurveyPage
   ],
   imports: [
     BrowserModule,
@@ -54,7 +37,6 @@ function initializeKeycloak(keycloak: KeycloakService) {
     useFactory: initializer,
     multi: true,
     deps: [FormsService, HttpClient, KeycloakService, ConfigstateService],
-    //deps: [KeycloakService]
     }
   ],
   bootstrap: [AppComponent]
