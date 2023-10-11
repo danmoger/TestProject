@@ -1,6 +1,5 @@
 import { KeycloakService } from 'keycloak-angular';
 import { KeycloakConfig } from 'keycloak-js';
-import { lastValueFrom } from 'rxjs';
 import { environment } from '../environments/environment';
 import { ConfigstateService } from 'src/app/services/configstate/configstate.service';
 import { HttpClient } from '@angular/common/http';
@@ -37,21 +36,11 @@ export function initializer(forms: FormsService, http: HttpClient, keycloak: Key
                         }
                         if (myFormName === null) {
                             myFormName = myRes.root.default;
-                            myRes.root.isAppMode = true;
-                        } else {
-                            myRes.root.isAppMode = true;
-                        }
+                        } 
+                        myRes.root.isAppMode = true;        
 
                         kcConfig = environment.keycloak;
-                        if (myFormName != null) {
-                            if (myFormName.startsWith('mms')) {
-                                kcConfig.clientId = 'MMS-APP'; // Neils Fudge -' + environment.appenv;
-                            } else {
-                                kcConfig.clientId = 'forms-app'; // + environment.appenv;
-                            }
-                        } else {
-                            kcConfig.clientId = 'forms-app'; // Neils Fudge -' + + environment.appenv;
-                        }
+                        kcConfig.clientId = 'forms-app';
                         if (isDevMode()) {
                             // kcConfig.url = myRes.root.keyCloakUrl;
                             console.log('In DevMode');
@@ -81,14 +70,7 @@ export function initializer(forms: FormsService, http: HttpClient, keycloak: Key
                     bearerExcludedUrls: ['/assets'],
                     loadUserProfileAtStartUp: false
                 })
-                /*                this.keycloakAuth.onTokenExpired = () => {
-                                    if (this.keycloakAuth.refreshToken) {
-                                        this.updateToken();
-                                    } else {
-                                        this.login();
-                                    }
-                                };
-                */
+
                 console.log('init');
                 const kk = keycloak.getKeycloakInstance();
                 console.log(JSON.stringify(kk.tokenParsed, null, 2));
@@ -109,23 +91,9 @@ export function initializer(forms: FormsService, http: HttpClient, keycloak: Key
                 console.log('Resolved 2');
 
                 myRes.root.data.Token = kk.tokenParsed;
-                if (myRes.root.data.Token.hasOwnProperty('Rights')) {
-                    myRes.root.isCreator = (myRes.root.data.Token as any).Rights.includes('Creator');
-                    myRes.root.isAdministrator = (myRes.root.data.Token as any).Rights.includes('Administrators');
-                    myRes.root.isAuditor = (myRes.root.data.Token as any).Rights.includes('Auditor');
-                    myRes.root.isUserAdmin = (myRes.root.data.Token as any).Rights.includes('UserAdmin');
-                    myRes.root.isAppMode = myRes.root.isAppMode && !(myRes.root.isCreator || myRes.root.isAdministrator);
-                }
-                if (myRes.root.data.Token.hasOwnProperty('Roles')) {
-                    // tslint:disable-next-line: max-line-length
-                    if ((myRes.root.isResusEnabled) && (myRes.root.data.Token.Roles.findIndex(element => element.includes('Resus - ')) !== -1)) {
-                        myRes.root.hasResus = true;
-                    } else { myRes.root.hasResus = false; }
 
-                    if (myRes.root.data.Token.Roles.find(item => item.startsWith('Resus - ') !== true) !== undefined) {
-                        myRes.root.hasMMS = true;
-                    } else { myRes.root.hasMMS = false; }
-                }
+                myRes.root.hasResus = false;
+                myRes.root.hasMMS = false;
 
                 appConfig.updateState({ config: myRes }, 'init 129');
                 resolve();
