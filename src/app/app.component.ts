@@ -9,7 +9,7 @@ import { ConfigstateService } from 'src/app/services/configstate/configstate.ser
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'MMSResus';
+  title = 'Forms App';
 
   loginInfo: any;
   authenticated: boolean = false;

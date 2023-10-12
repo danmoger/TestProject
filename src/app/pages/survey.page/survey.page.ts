@@ -155,11 +155,12 @@ export class SurveyPage implements OnInit, AfterViewInit {
         const details: any = {};
         details.name = this.tokenParsed.given_name + ' ' + this.tokenParsed.family_name;
         details.formName = this.nextstate.config.root.formname;
-        if (this.nextstate.config.root.data.formDetail.form.hasOwnProperty('template')) {
+        if (this.nextstate.config.root.data.formDetail.form.hasOwnProperty('template') &&
+            this.nextstate.config.root.data.formDetail.hasOwnProperty('sendTo')) {
           details.template = this.nextstate.config.root.data.formDetail.form.template;
           details.sendEmail = {
-            to: 'daniel.moger@somersetft.nhs.uk',
-            subject: 'Training Evaluation Form',
+            to: this.nextstate.config.root.data.formDetail.sendTo.email,
+            subject: this.nextstate.config.root.data.formDetail.sendTo.subject,
             from: this.tokenParsed.email
           };
         }
@@ -179,16 +180,8 @@ export class SurveyPage implements OnInit, AfterViewInit {
             this.router.navigate(['survey']);
             // this.kc.clearToken();
           });
-          //           this.kc.logout().then(() => this.kc.clearToken());
-          if (this.isResus) {
-            //  this.router.navigate(['results']);
-          }
         });
-      } else {
-        //  this.location.back(); /// ToDo what happens now after a readonly view?
-      }
-    } else {
-      //  this.resultData = result;
-    }
+      } 
+    } 
   }
 }
