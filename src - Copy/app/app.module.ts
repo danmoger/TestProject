@@ -12,7 +12,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
     keycloak.init({
       config: {
-        url: 'https://sso.tst.nhs.uk/auth',
+        url: 'https://ssoa.tst.nhs.uk/auth',
         realm: 'SIDER',
         clientId: 'mms-app'
       },

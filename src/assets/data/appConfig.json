@@ -1,9 +1,9 @@
 {
   "root": {
     "mongoDBURL": "reduntant",
-    "keyCloakUrl": "https://sso.tst.nhs.uk/auth",
+    "keyCloakUrl": "https://sso2.tst.nhs.uk/auth",
     "production": false,
-    "dataUrl": "https://mph-mmsapi.tst.nhs.uk/api/",
+    "dataUrl": "https://mph-devmmsapi.tst.nhs.uk/api/",
     "PostFormDataURl": "forms/PostFormData",
     "saveFormDefinition": "forms/SaveFormDefinition",
     "PostWardUpdateDataURL": "ward/update",

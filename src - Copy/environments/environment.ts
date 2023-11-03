@@ -1,7 +1,7 @@
 
 import { KeycloakConfig } from 'keycloak-js';
 const keycloakConfig: KeycloakConfig = {
-  url: 'https://sso.tst.nhs.uk/auth',
+  url: 'https://ssoen.tst.nhs.uk/auth',
   // url: 'https://mph-eprdwhdkey1.tst.nhs.uk/auth',
   realm: 'TST',
   clientId: 'mms-app'
