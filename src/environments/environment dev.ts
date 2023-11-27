@@ -12,5 +12,5 @@ export const environment = {
   dataUrl: 'https://mph-formsnewdev.tst.nhs.uk/',
   production: false,
   keycloak: keycloakConfig,
-  appenv: 'Argh'
+  appenv: '-dev'
 };

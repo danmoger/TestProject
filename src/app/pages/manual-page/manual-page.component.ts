@@ -8,7 +8,8 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./manual-page.component.css']
 })
 export class ManualPageComponent {
-  pdfSrc = '../../assets/mmsresus V3.pdf';
+
+  pdfSrc = '../../assets/mmsresus latest.pdf';
 
   constructor(private router: Router) { }
 

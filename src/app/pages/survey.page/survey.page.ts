@@ -62,7 +62,7 @@ export class SurveyPage implements OnInit, AfterViewInit {
   okState = 'danger';
   resultState = false;
   Nos = 0;
-
+  rights=[];
   path = '../../assets/manual.png';
   alttext = 'HELP!';
 
@@ -108,7 +108,7 @@ export class SurveyPage implements OnInit, AfterViewInit {
       this.goForIt();
     }
   }
-
+groups
   ImageClick() {
     this.router.navigate(['manualPage']);
   }
@@ -125,6 +125,7 @@ export class SurveyPage implements OnInit, AfterViewInit {
 
     this.options = [{ label: '**** Department ****', value: -99 }];
     let groups = this.tokenParsed.Roles;
+    this.rights = this.tokenParsed.Rights;
 
     if (groups !== undefined) {
       if (groups.length > 0) {
@@ -303,7 +304,7 @@ export class SurveyPage implements OnInit, AfterViewInit {
           this.myjson.calculatedValues[3].expression = ward.Resus.substr(0, 1);
           this.myjson.calculatedValues[4].expression = ward.Resus.substr(1, 1);
           this.myjson.calculatedValues[5].expression = ward.Resus.substr(2, 1);
-          this.myjson.calculatedValues[6].expression = '\'' + ward.WardName.substring(8, 99).toString() + '\'';
+          this.myjson.calculatedValues[6].expression = '\'' + ward.wardName.substring(8, 99).toString() + '\'';
           // this.dbDetails = this.myForm.database
 
         } else {
@@ -319,21 +320,26 @@ export class SurveyPage implements OnInit, AfterViewInit {
           this.myjson.pages[2].visible = true;
           this.myjson.pages[2].elements[0].defaultValue = this.myTypes;
           this.myjson.pages[2].elements[0].choices = this.myChoices;
+
+          if (this.rights !== undefined) {
+            if (this.rights.includes('App Debug')) {
+              this.myjson.pages[2].elements[0].visible=true;
+            }
+          }
         }
 
-
         if (this.isReadOnly) {  // View existing data
-          this.myjson.description = 'MMS - Viewing entry for ' + ward.WardName + ' recorded on ' + this.recordedDate;
+          this.myjson.description = 'MMS - Viewing entry for ' + ward.wardName + ' recorded on ' + this.recordedDate;
           this.myjson.title = 'Medicines Management System - historical data viewer.';
           this.myjson.completeText = 'Back';
         } else {
           if (this.isResus) {
             this.myjson.title = 'Resus Audit System ' + this.appEnv;
-            this.myjson.description = 'Resus - New entry for ' + ward.WardName + ' on '
+            this.myjson.description = 'Resus - New entry for ' + ward.wardName + ' on '
               + (new Date().toLocaleDateString('en-GB'));
           } else {
             this.myjson.title = 'Medicines Management System ' + this.appEnv;
-            this.myjson.description = 'MMS - New entry for ' + ward.WardName + ' on '
+            this.myjson.description = 'MMS  New entry for ' + ward.wardName + ' on '
               + (new Date().toLocaleDateString('en-GB'));
           }
 
