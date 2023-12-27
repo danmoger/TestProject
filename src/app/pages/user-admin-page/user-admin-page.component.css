@@ -1,0 +1,37 @@
+/* styles.css (or your component-specific CSS) */
+.container {
+    display: flex;
+  }
+  
+  .scrollable-box {
+    list-style: none;
+    overflow-y: auto;
+    width: 95%;
+    height: 95%;
+    border: 1px solid #ccc;
+    padding: 5px;
+    cursor: pointer;
+  }
+  
+  .scrollable-box li {
+    padding: 4px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .scrollable-box li:hover {
+    background-color: #f0f0f0;
+  }
+
+  .float-container {
+    border: 3px solid #fff;
+    padding: 5px;
+    height: 95%;
+}
+
+.float-child {
+    width: 50%;
+    float: left;
+    padding: 20px;
+    border: 2px solid red;
+    height: 98%;
+} 

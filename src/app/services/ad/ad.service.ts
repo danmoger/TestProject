@@ -14,15 +14,16 @@ const httpOptions = {
 })
 
 export class ActivedirectoryService {
-
+  adEvn ="UAT";
   iAm: any;
   constructor(private http: HttpClient, private newConfig: ConfigstateService) {
-    this.iAm = this.newConfig.state.config.root.data.Token.name;
+    //this.iAm = this.newConfig.state.config.root.data.Token.name;
+    console.log("ADS Started");
   }
 
   // add a user by email to a given AD Group
   addUser(ward: string, user: string) {
-    const data = { environment: 'PRD', groupDN: ward, userDN: user, actionedBy: this.iAm, action: 'AddUser' };
+    const data = { environment: this.adEvn, groupDN: ward, userDN: user, actionedBy: this.iAm, action: 'AddUser' };
     const myUrl = this.newConfig.state.config.root.dataUrl + 'ActiveDirectory/PutUserinGroup';
     return this.http.post(myUrl, JSON.stringify(data), httpOptions).pipe(map(res => {
       return res;
@@ -31,7 +32,7 @@ export class ActivedirectoryService {
   
   // remove a user from an AD Group
   removeUser(ward: string, user: string) {
-    const data = { environment: 'PRD', groupDN: ward, userDN: user, actionedBy: this.iAm, action: 'RemoveUser' };
+    const data = { environment: this.adEvn, groupDN: ward, userDN: user, actionedBy: this.iAm, action: 'RemoveUser' };
 
     const myUrl = this.newConfig.state.config.root.dataUrl + 'ActiveDirectory/RemoveUserFromGroup';
     return this.http.post(myUrl, JSON.stringify(data), httpOptions).pipe(map(res => {
@@ -42,7 +43,7 @@ export class ActivedirectoryService {
   // get list of users in an AD Group
   getUsers(ward: string) {
     const myUrl = this.newConfig.state.config.root.dataUrl
-      + 'ActiveDirectory/GetUsers?environment=PRD&groupDN=' + encodeURIComponent(ward);
+      + 'ActiveDirectory/GetUsers?environment=' +this.adEvn+'&groupDN=' + encodeURIComponent(ward);
     return this.http.get(myUrl, httpOptions).pipe(map((res: any) => {
       return res.Users;
     }));
@@ -51,9 +52,9 @@ export class ActivedirectoryService {
 
   // Get the list of AD Groups
   getWards() {
-    const myUrl = this.newConfig.state.config.root.dataUrl + 'ActiveDirectory/GetGroups?environment=PRD';
+    const myUrl = this.newConfig.state.config.root.dataUrl + 'ActiveDirectory/GetGroups?environment='+this.adEvn;
     return this.http.get(myUrl, httpOptions).pipe(map((res: any) => {
-      return res.Wards;
+      return res;
     }));
   }
 }

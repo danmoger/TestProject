@@ -8,7 +8,7 @@ import { of } from 'rxjs/internal/observable/of';
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
-
+// FRED NEEDS CONFIG
 @Injectable({
     providedIn: 'root'
 })
@@ -26,7 +26,7 @@ export class FormsService {
     public getTodaysResusShortList(){
         const collection = 'resus_view_Last_Weekly' + this.resus;
         const myUrl = environment.dataUrl +
-            'mongo/filterCollection?db=' + 'mms2' + '&collection=' + collection + '&filter={}';
+            'mongo/filterCollection?db=' + 'mms22' + '&collection=' + collection + '&filter={}';
         return this.http.get(myUrl).pipe(map(resp => {
             // console.log( resp );
             return resp;

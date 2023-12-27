@@ -22,15 +22,22 @@ body {
   height: 100%;
 }
 
+.sd-element__title .sv-string-viewer {
+  white-space: normal;
+  font-size: large;
+}
+
 .sd-row__question{
     white-space: break-spaces !important;
 }
- 
-
 .sv_row .sv_qstn h5 {
   color: darkviolet;
 }
 
+ div.sd-element__header.sd-element__header--location-top.sd-panel__header > h4 {
+  font-size: 2em !important;
+  margin: .5em 0 0 0 !important;
+ }
 
 .sv_row .sv_qstn {
   margin-bottom: 0px !important;
@@ -79,7 +86,7 @@ div .sv-title-actions__title{
 }
 
 h5.sq-title{
-    color: darkviolet !important;
+    color: darkviolet ;
 }
 
 span.sv-string-viewer{
@@ -155,8 +162,6 @@ fieldset.sq-root.sq-root-required {
   margin: .5em 0 0 0 !important;
   background-color: #b3b3b3;
 }
-
- 
 
 .my-redtext {
   color: red !important;

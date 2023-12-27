@@ -1,0 +1,30 @@
+.scrollable-box {
+    list-style: none;
+    overflow-y: scroll;
+    height: 500px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    cursor: pointer;
+  }
+  
+  .scrollable-box li {
+    padding: 4px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .scrollable-box li:hover {
+    background-color: #f0f0f0;
+  }
+  .SelectedItem{
+    background-color: #f0f0f0;
+  }
+
+  li.disabled {
+    cursor: not-allowed;
+    text-decoration: none;
+    color: black;
+    }
+    
+    li.disabled:hover {
+        cursor:not-allowed;
+    }

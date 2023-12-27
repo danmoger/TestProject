@@ -3,7 +3,7 @@ import { KeycloakConfig } from 'keycloak-js';
 const keycloakConfig: KeycloakConfig = {
   url: 'https://ssouat.tst.nhs.uk:8443/auth',
   realm: 'SIDeR',
-  clientId: 'mms-app-uat'
+  clientId: 'forms-app-UAT'
 };
 
 export const environment = {

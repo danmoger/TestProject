@@ -81,7 +81,7 @@ export class SurveyPage implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.appEnv = 'PRD';  // force prd for Live testing
+   // this.appEnv = 'PRD';  // force prd for Live testing
   }
 
   ngOnInit() {
@@ -98,7 +98,7 @@ export class SurveyPage implements OnInit, AfterViewInit {
 
     if (this.isReadOnly !== null) {     // assumption of ONLY mms/2 when readonly?
       this.myjson.pages.find(pg => pg.name === 'mms').readOnly = true;
-      this.formsService.getItemDetailByGUID('mms2', 'submissions', this.ParentGuid).toPromise().then(result => {
+      this.formsService.getItemDetailByGUID('mms22', 'submissions', this.ParentGuid).toPromise().then(result => {
         this.data = result.result;
         this.recordedDate = result.date;
         console.log(this.data);
@@ -133,7 +133,7 @@ groups
         groups.sort(function (a, b) { return a.localeCompare(b); });
         this.today = moment().format('L');
         // ToDo: needs get todays entries for EITHER MMS or for RESUS
-        this.formsService.getTodaysSubmittions(this.today, this.formType).toPromise().then((data: any[]) => {
+        this.formsService.getTodaysSubmissions(this.today, this.formType).toPromise().then((data: any[]) => {
           console.log('-_______________________', data);
           let tempGroups: any;
           if (this.formType === FormType.mms) {
@@ -334,11 +334,11 @@ groups
           this.myjson.completeText = 'Back';
         } else {
           if (this.isResus) {
-            this.myjson.title = 'Resus Audit System ' + this.appEnv;
+            this.myjson.title = 'Resus Audit System ' + 'Test'; //this.appEnv;
             this.myjson.description = 'Resus - New entry for ' + ward.wardName + ' on '
               + (new Date().toLocaleDateString('en-GB'));
           } else {
-            this.myjson.title = 'Medicines Management System ' + this.appEnv;
+            this.myjson.title = 'Medicines Management System ' + 'Test'; //tthis.appEnv;
             this.myjson.description = 'MMS  New entry for ' + ward.wardName + ' on '
               + (new Date().toLocaleDateString('en-GB'));
           }
@@ -390,9 +390,10 @@ groups
           this.sendData(sender.data);
         });
         survey.onUpdateQuestionCssClasses
-        .add(function (survey, options) {
+        .add(function (_survey, options) {
           const classes = options.cssClasses;
-          //                 console.log( survey, options );
+          console.debug(options.question.title);
+          //                 console.log( _survey, options );
           classes.root = 'sq-root';
           classes.title = 'sq-title';
           classes.item = 'sq-item';
@@ -406,7 +407,9 @@ groups
           if ((options.question.getType() === 'checkbox')) {
             classes.root = 'sq-root sq-root-cb';
           }
-
+          if (options.question.getType() === 'radiogroup' ) {
+            classes.root ='sq-root sq-root-required';
+          }
           if (options.question.getType() === 'text') {
             if (options.question.indent > 0) {
               classes.root = 'sq-root sq-root-txt';
@@ -504,7 +507,7 @@ groups
         }
         // ToDo: details.sendEmail = true;  // Needs to be a flag on the FormDefinition that sets this and details of who?
         if (this.nextstate.config.root.formname.startsWith('mms')) {
-          details.ward_ID = { $oid: this.nextstate.config.root.data.ward.Id };
+          details.ward_ID = { $oid: this.nextstate.config.root.data.ward.id };
         }
 
 

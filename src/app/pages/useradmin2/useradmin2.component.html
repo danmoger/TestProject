@@ -1,0 +1,141 @@
+<div *ngIf="this.formType==='none'; then showSelector else showconsole">
+
+</div>
+<ng-template #showSelector>
+
+    <div>
+        <div class="center text-warning">Welcome {{this.iAm}}</div>
+        <div class="center text-warning">
+            <input [disabled]="this.formType !== 'none'" type="radio" id="MMS" name="formType" value=" MMS - Entry "
+                (change)="FormTypeChanged($event)">
+            <label for="MMS">&nbsp;&nbsp;MMS&nbsp;&nbsp;&nbsp;</label>
+            <input [disabled]="this.formType !== 'none'" type="radio" id="RESUS" name="formType" value="Resus"
+                (change)="FormTypeChanged($event)">
+            <label for="DAILY">&nbsp;&nbsp;Resus</label>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #showconsole>
+    <div class="container-fluid top5 ">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="center text-info">
+                    User Admin console for {{this.formType}}
+                </h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">&nbsp;
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1 d-flex justify-content-center"></div>
+            <div class="col-md-3 d-flex justify-content-center">
+                <h2 class="center text-primary">Location</h2>
+            </div>
+            <div class="col-md-3 d-flex justify-content-center">
+                <h2 class="center text-primary">Users Email</h2>
+            </div>
+            <div class="col-md-3 d-flex justify-content-center">
+                <h2 class="center text-primary">UserActions</h2>
+            </div>
+            <div class="col-md-2 d-flex justify-content-center"></div>
+        </div>
+        <div class="row ">
+            <div class="col-md-1 d-flex justify-content-center"></div>
+            <div class="col-md-3 d-flex justify-content-center">
+
+                <div *ngIf="this.GotWards">
+                    <ul #wardsbox class="scrollable-box">
+                        <li *ngFor="let ward of wards; let i = index" (click)="WardSelected(ward)"
+                            [ngClass]="{'SelectedItem': this.selectedWardName ===ward['name']}"
+                            [class.disabled]="this.addingUser === true || this.removingUser === true" >{{ward['name']}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class=" col-md-3 d-flex justify-content-center">
+                <div *ngIf="this.GotUser">
+                    <ul #usersbox class="scrollable-box">
+                        <li *ngFor="let user of users; let i = index" (click)="userSelected(user)"
+                            [ngClass]="{'SelectedItem': this.SelectedUserText ===user['label']}"
+                            [class.disabled]="this.addingUser === true || this.removingUser === true">{{user['label']}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="row rowborder">
+                    <div class="col-12 text-center">
+                        <div class="btn-group btn-group-vertical" role="group">
+                            <button type="button" class="btn btn-danger"
+                                [disabled]="this.addingUser === true || this.removingUser === true || this.SelectedUserText === ''"
+                                (click)="removeUserBtnClicked()">Remove</button>
+                            <button type="button" class="btn btn-info"
+                                [disabled]="this.addingUser || this.removingUser || this.selectedWardName === ''"
+                                (click)="addUserBtnClicked()">Add</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row rowborder"> <!-- remove a user confirmation -->
+                    <div class="col-12">
+                        <div *ngIf="this.removingUser === true" class="row rowborder">
+                            <h6>Removing user {{this.SelectedUserText}} from {{this.selectedWardName}}</h6>
+                            <div class="row">
+                                <div class="col-6">
+                                    <p class="biggerText"> Are you sure?</p>
+                                </div>
+                                <div class="col-3"><button type="button" class="btn btn-success btn-lg"
+                                        (click)="removeUser()"> Yes </button>
+                                </div>
+                                <div class="col-3">
+                                    <button type="button" class="btn btn-warning btn-lg" (click)="removeUserCancel()">
+                                        No
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="this.addingUser === true" class="row rowborder">
+                    <div class="col-md12">
+                        <div class="row">
+                            <div class="col-12">&nbsp;</div>
+                            <div class="col-12">
+                                <h6>Adding user to {{this.selectedWardName}}</h6>
+                            </div>
+                            <div class="col-12 biggerText">Enter Email address</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="email" (onChange)="validateEmailAddress($event)" [height]="36"
+                                    [width]="350" placeHolder="User.name@SomersetFT.nhs.uk" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-2"></div>
+                                    <div class="col-3">
+                                        <button type="button" class="btn btn-warning btn-lg"
+                                            (click)="cancelAddUserBtnClicked()">Cancel</button>
+                                    </div>
+                                    <div class="col-1"></div>
+                                    <div>
+                                        <button type="button" class="btn btn-success btn-lg"
+                                            [disabled]="this.enableSaveAddUser() === false"
+                                            (click)="saveAddUserBtnClicked()">Save</button>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 d-flex justify-content-center"></div>
+</ng-template>

@@ -1,0 +1,17 @@
+<!-- app.component.html -->
+<div class="container">
+  <div>
+    <label for="wardsbox">wards:</label>
+    <ul #wardsbox class="scrollable-box" >
+      <li *ngFor="let ward of wards; let i = index" (click)="populateUsers(ward)">{{ward['name']}}
+      </li>
+    </ul>
+  </div>
+
+  <div>
+    <label for="usersbox">users:</label>
+    <ul #usersbox class="scrollable-box">
+      <li  *ngFor="let user of users; let i = index" (click)="userSelected(user)">{{user['label']}}</li>
+    </ul>
+  </div>
+</div>
