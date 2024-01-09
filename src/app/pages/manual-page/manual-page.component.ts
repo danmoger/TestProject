@@ -11,7 +11,9 @@ export class ManualPageComponent {
 
   pdfSrc = '../../assets/mmsresus latest.pdf';
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private route: ActivatedRoute) {
+
+   }
 
   BackToStart() {
     this.router.navigate(['survey']);

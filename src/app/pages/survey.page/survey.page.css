@@ -7,7 +7,28 @@
   height: 50px;
   width: 50px;
   cursor: pointer;
+  margin: 5px;
+  
 }
+
+.flex-container {
+  display: flex;
+  justify-content:space-evenly;
+  flex-direction: row;
+}
+
+
+.flex-child {
+  flex: 1;
+  border: 5px solid yellow;
+  margin-left: 40px;
+  margin-right: 10px;
+}  
+
+.flex-child:first-child {
+  margin-left: 2px;
+} 
+
 
 #outPopUp{
   background-color: rgb(231, 231, 231);

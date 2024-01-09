@@ -1,6 +1,7 @@
-import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, OnInit, OnChanges, ChangeDetectorRef, ViewChildren, QueryList } from '@angular/core';
 import { WardsService } from 'src/app/services/wards/wards.service';
 import { ActivedirectoryService } from 'src/app/services/ad/ad.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -10,123 +11,142 @@ import { ActivedirectoryService } from 'src/app/services/ad/ad.service';
 })
 export class Useradmin2Component {
 
+  //@ViewChildren('adduserbit') ref: QueryList<any>;
+
+  /* @ViewChild('inputEmail') set inputEmail(
+     elementRef: ElementRef<HTMLInputElement> | undefined
+   ) {
+     console.log(elementRef);
+   }
+  */
   iAm: any;
-  GotUser: any;
+  GotUser= false;
   ListBoxUsers: any;
   ListBoxWards: any;
-  addingUser: any;
-  selectedWard: string;
-  selectedWardName: any;
+  addingUser = false;
+  NewUserEmail: string;
+  selectedWard: any;
+  selectedWardName: string;
   formType: any;
-  removingUser: any;
+  removingUser = false;
   SelectedUser: any;
-  SelectedUserText: any;
+  SelectedUserText: string;
   GotWards = false;
   wards: [];
   users: [];
-  validEmailAddress: boolean;
+  validEmailAddress = false;
 
-  constructor(public ads: ActivedirectoryService) {
+  constructor(public ads: ActivedirectoryService, public cd: ChangeDetectorRef, private router: Router) {
+  }
+
+  BackToStart() {
+    this.router.navigate(['survey']);
   }
 
   ngOnInit() {
 
-    this.populatewards(1);
+    this.formType = "none";
   }
 
   userSelected(aUser: any) {
-    this.selectedWard = aUser;
-    this.SelectedUserText = aUser.label;
+    if (this.addingUser ===false && this.removingUser === false) {
+      this.SelectedUser = aUser;
+      this.SelectedUserText = aUser.label;
+    }
   }
+
   WardSelected(ward: any) {
-    this.populateUsers(ward);
-    this.selectedWardName = ward.name;
+    if (this.addingUser === false && this.removingUser === false) {
+      this.populateUsers(ward);
+      this.selectedWardName = ward.name;
+      this.selectedWard = ward;
+    }
   }
 
-populateUsers(ward: any){
+  populateUsers(ward: any) {
 
-  this.SelectedUserText ="";
-  const _this = this;
-  _this.GotUser = false;
-  _this.ads.getUsers(ward.Ou).subscribe(du => {
-    _this.users = du.sort((a, b) => (a.label > b.label) ? 1 : ((b.label > a.label) ? -1 : 0));
-    this.GotUser = true;
-  });
-}
+    this.SelectedUserText = "";
+    const _this = this;
+    _this.GotUser = false;
+    _this.ads.getUsers(ward.Ou).subscribe(du => {
+      _this.users = du.sort((a, b) => (a.label > b.label) ? 1 : ((b.label > a.label) ? -1 : 0));
+      this.GotUser = true;
+    });
+  }
 
   populatewards($event) {
     const _this = this;
     this.ads.getWards().subscribe(d => {
       const __this = this;
       // " MMS - Entry Comm-Ash Ward"
-      _this.wards = d.filter(x => { return x.name.indexOf(" MMS - Entry ") === 0; });
-      _this.wards.forEach((x: any) => { x.name = x.name.substring(13, 99); });
-      _this.formType = " MMS - Entry ";
+      // " Resus - "
+      _this.wards = d.filter(x => { return (x.name.indexOf(this.formType) === 0 && x.name.indexOf("YDH") === -1) });
+      _this.wards.forEach((x: any) => { x.name = x.name.substring(this.formType.length, 99); });
+
       _this.GotWards = true;
       // has to be all done in here for set up of data adaptor
     });
-    this.selectedWardName ="";
-    this.SelectedUserText ="";
+    this.selectedWardName = "";
+    this.SelectedUserText = "";
   }
 
-  FormTypeChanged($event: Event) {
-    throw new Error('Method not implemented.');
+  FormTypeChanged($event: any) {
+    this.formType = $event.target.value;
+    this.populatewards(1);
   }
 
-  addUserBtnClicked() {
-    
-    this.addingUser === true;  //Fred needs to finish
+  ClickedAddUserBtn() {
+
+    this.addingUser = true;  //Fred needs to finish
   }
 
-  removeUserBtnClicked() {
+  ClickedRemoveUserBtn() {
     this.removingUser = true;
   }
 
   removeUser() {
-    this.ads.removeUser(this.selectedWard, this.SelectedUser).subscribe(res => {
+    this.ads.removeUser(this.selectedWard.Ou, this.SelectedUser.value).subscribe(res => {
       this.populateUsers(this.selectedWard);
       this.removingUser = false;
     });
   }
 
-  removeUserCancel() {
+  CancelRemoveUser() {
     this.removingUser = false;
   }
 
-  validateEmailAddress($event: Event) {
-    let inputEmail ="";
-    if ((inputEmail === undefined) || (inputEmail === '')) {
-      this.validEmailAddress = false;
-      return;
-    }
+  validateEmailAddress($event: any) {
+    let email = ($event.target).value.toLowerCase();
 
-    if (!((/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inputEmail)) &&
-      (inputEmail.indexOf('@somersetft.nhs.uk') !== -1))) {
+    if (!((/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) &&
+      (email.indexOf('@somersetft.nhs.uk') !== -1))) {
       this.validEmailAddress = false;
       return;
     }
 
     // check its not already in the Group
-    const x = this.users.find( (xx:any) => xx.label.toLowerCase() === inputEmail.toLowerCase());
+    const x = this.users.find((xx: any) => xx.label.toLowerCase() === email.toLowerCase());
     if (x !== undefined) {
       this.validEmailAddress = false;
       return;
     }
 
+
     // passes all the tests
+    this.NewUserEmail = email;
     this.validEmailAddress = true;
   }
+
   cancelAddUserBtnClicked() {
-    throw new Error('Method not implemented.');
+    this.addingUser = false;
   }
-  enableSaveAddUser(): boolean {
-    throw new Error('Method not implemented.');
-  }
+
   saveAddUserBtnClicked() {
-    throw new Error('Method not implemented.');
+    this.ads.addUser(this.selectedWard.Ou, this.NewUserEmail).subscribe(res => {
+      this.populateUsers(this.selectedWard);
+      this.addingUser = false;
+      this.NewUserEmail = '';
+      this.validEmailAddress = false;
+    });
   }
-
-
-
-
 }

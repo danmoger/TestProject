@@ -1,10 +1,10 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import * as moment from 'moment';
 import { ConfigstateService } from 'src/app/services/configstate/configstate.service';
 import { ITrustForm } from 'src/app/interfaces/trustform';
 import { FormClass } from 'src/app/classes/cform';
 import { FormsService } from 'src/app/services/forms/forms.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { WardsService } from 'src/app/services/wards/wards.service';
 import { KeycloakService } from 'keycloak-angular';
 import { forkJoin, Subscription } from 'rxjs';
@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment';
 import { FormType } from 'src/utils/enum';
 import { Model } from "survey-core";
 import * as Survey from 'survey-core';
-
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 
 const surveyJson = null;
@@ -27,8 +27,8 @@ Survey.JsonObject.metaData.addProperty('page', 'popupdescription:text');
   styleUrls: ['./survey.page.css']
 })
 // tslint:disable-next-line:component-class-suffix
-export class SurveyPage implements OnInit, AfterViewInit {  
-  
+export class SurveyPage implements OnInit, OnDestroy {
+
   surveyModel: Model;
   myForm: ITrustForm = new FormClass();
   data: any;
@@ -62,26 +62,41 @@ export class SurveyPage implements OnInit, AfterViewInit {
   okState = 'danger';
   resultState = false;
   Nos = 0;
-  rights=[];
+  rights = [];
   path = '../../assets/manual.png';
+  iconuseradminpath = '../../assets/icon-user-admin.png';
   alttext = 'HELP!';
+  isUserAdmin = false;
+  navigationSubscription;
+  mySubscription;
 
   constructor(private configService: ConfigstateService, private formsService: FormsService,
     public wardsService: WardsService, private route: ActivatedRoute, private router: Router,
-    private kc: KeycloakService) {
+    private kc: KeycloakService, private deviceService: DeviceDetectorService) {
     moment.locale('en-gb');
     this.ParentGuid = this.route.snapshot.paramMap.get('guid');
     this.isReadOnly = this.route.snapshot.paramMap.get('readOnly');
     this.wardByParam = this.route.snapshot.paramMap.get('ward');
     this.nextstate = this.configService.state;
+
     if (this.wardByParam !== null) {
       this.nextstate.config.root.formname = 'mmsResus';
     }
-    
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    };
+
+    this.mySubscription = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        // Trick the Router into believing it's last link wasn't previously loaded
+        this.router.navigated = false;
+      }
+    });
+
   }
 
   ngAfterViewInit() {
-   // this.appEnv = 'PRD';  // force prd for Live testing
+    // this.appEnv = 'PRD';  // force prd for Live testing
   }
 
   ngOnInit() {
@@ -95,7 +110,11 @@ export class SurveyPage implements OnInit, AfterViewInit {
     this.title = this.myForm.name;
     this.myjson = this.myForm.form;
     this.iAm = this.configService.state.config.root.data.Token.name;
-
+    this.isUserAdmin = this.configService.state.config.root.isUserAdmin;
+    console.log(this.isUserAdmin);
+    this.nextstate.config.root.currentRole = null;
+    this.configService.updateState(this.nextstate, 'somerwhere');
+    this.doSurvey = false;
     if (this.isReadOnly !== null) {     // assumption of ONLY mms/2 when readonly?
       this.myjson.pages.find(pg => pg.name === 'mms').readOnly = true;
       this.formsService.getItemDetailByGUID('mms22', 'submissions', this.ParentGuid).toPromise().then(result => {
@@ -108,11 +127,13 @@ export class SurveyPage implements OnInit, AfterViewInit {
       this.goForIt();
     }
   }
-groups
-  ImageClick() {
-    this.router.navigate(['manualPage']);
-  }
 
+  ImageClick(page: string) {
+    this.router.navigate(['manualPage', page]);
+  }
+  admin2() {
+    this.router.navigate(['useradmin2']);
+  }
   changeformType($event) {
     const _this = this;
     _this.formType = $event.target.value;
@@ -280,7 +301,7 @@ groups
         ward = value[0];
         types = value[1];
       },
-      
+
       complete: () => {  // build up list of Question Sections to be displayed.
         const _this = this;
         if (_this.isResus) {
@@ -323,7 +344,7 @@ groups
 
           if (this.rights !== undefined) {
             if (this.rights.includes('App Debug')) {
-              this.myjson.pages[2].elements[0].visible=true;
+              this.myjson.pages[2].elements[0].visible = true;
             }
           }
         }
@@ -371,7 +392,7 @@ groups
           header.appendChild(btn);
         });
 
-        survey.onValueChanging.add((s:any, opts) => {
+        survey.onValueChanging.add((s: any, opts) => {
           const _that = this;
           if (s.variablesHash.resuspage !== 'mms') {
             if (opts.question.getType() === 'radiogroup') {
@@ -390,41 +411,41 @@ groups
           this.sendData(sender.data);
         });
         survey.onUpdateQuestionCssClasses
-        .add(function (_survey, options) {
-          const classes = options.cssClasses;
-          console.debug(options.question.title);
-          //                 console.log( _survey, options );
-          classes.root = 'sq-root';
-          classes.title = 'sq-title';
-          classes.item = 'sq-item';
-          classes.label = 'sq-label';
+          .add(function (_survey, options) {
+            const classes = options.cssClasses;
+            console.debug(options.question.title);
+            //                 console.log( _survey, options );
+            classes.root = 'sq-root';
+            classes.title = 'sq-title';
+            classes.item = 'sq-item';
+            classes.label = 'sq-label';
 
-          if (options.question.isRequired) {
-            classes.title = 'sq-title sq-title-required';
-            classes.root = 'sq-root sq-root-required';
-          }
-
-          if ((options.question.getType() === 'checkbox')) {
-            classes.root = 'sq-root sq-root-cb';
-          }
-          if (options.question.getType() === 'radiogroup' ) {
-            classes.root ='sq-root sq-root-required';
-          }
-          if (options.question.getType() === 'text') {
-            if (options.question.indent > 0) {
-              classes.root = 'sq-root sq-root-txt';
-            } else {
-              classes.root = 'sq-root sq-root-txtin';
+            if (options.question.isRequired) {
+              classes.title = 'sq-title sq-title-required';
+              classes.root = 'sq-root sq-root-required';
             }
-          }
-          if (options.question.title.startsWith('***')) {
-            classes.title = 'sq-title my-redtext';
-          } else if (options.question.title.startsWith('**')) {
-            classes.title = 'sq-title my-bluetext';
-          } else if (options.question.title.startsWith('*')) {
-            classes.title = 'sq-title my-greentext';
-          }
-        });
+
+            if ((options.question.getType() === 'checkbox')) {
+              classes.root = 'sq-root sq-root-cb';
+            }
+            if (options.question.getType() === 'radiogroup') {
+              classes.root = 'sq-root sq-root-required';
+            }
+            if (options.question.getType() === 'text') {
+              if (options.question.indent > 0) {
+                classes.root = 'sq-root sq-root-txt';
+              } else {
+                classes.root = 'sq-root sq-root-txtin';
+              }
+            }
+            if (options.question.title.startsWith('***')) {
+              classes.title = 'sq-title my-redtext';
+            } else if (options.question.title.startsWith('**')) {
+              classes.title = 'sq-title my-bluetext';
+            } else if (options.question.title.startsWith('*')) {
+              classes.title = 'sq-title my-greentext';
+            }
+          });
         this.surveyModel = survey;
       }
     });
@@ -529,12 +550,13 @@ groups
 
         myResults.details = details;
         this.formsService.postFormResponses(myResults).subscribe(resp => {
+setTimeout( () => {this.router.navigate(['survey'])},2000);
           console.log(resp, new Date());
           //          this.kc.clearToken();
-          this.kc.logout().then(() => {
-            this.router.navigate(['survey']);
-            // this.kc.clearToken();
-          });
+          //  this.kc.logout().then(() => {
+          //    this.router.navigate(['survey']);
+          // this.kc.clearToken();
+          //  });
           //           this.kc.logout().then(() => this.kc.clearToken());
           if (this.isResus) {
             //  this.router.navigate(['results']);
@@ -546,5 +568,18 @@ groups
     } else {
       //  this.resultData = result;
     }
+  }
+  
+  ngOnDestroy() {
+    this.mySubscription?.unsubscribe();
+  }
+   delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+    }
+  LogoutClicked () {
+    this.kc.logout().then(() => {
+      this.router.navigate(['/']);
+      // this.kc.clearToken();
+    });
   }
 }

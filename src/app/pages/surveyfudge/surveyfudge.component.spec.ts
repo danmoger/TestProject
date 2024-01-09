@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Useradmin2Component } from './useradmin2.component';
+import { SurveyfudgeComponent } from './surveyfudge.component';
 
-describe('Useradmin2Component', () => {
-  let component: Useradmin2Component;
-  let fixture: ComponentFixture<Useradmin2Component>;
+describe('SurveyfudgeComponent', () => {
+  let component: SurveyfudgeComponent;
+  let fixture: ComponentFixture<SurveyfudgeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ Useradmin2Component ]
+      declarations: [ SurveyfudgeComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Useradmin2Component);
+    fixture = TestBed.createComponent(SurveyfudgeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -20,5 +20,4 @@ describe('Useradmin2Component', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  
 });

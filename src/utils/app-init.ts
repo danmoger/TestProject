@@ -117,7 +117,7 @@ export function initializer(forms: FormsService, http: HttpClient, keycloak: Key
                     myRes.root.isCreator = (myRes.root.data.Token as any).Rights.includes('Creator');
                     myRes.root.isAdministrator = (myRes.root.data.Token as any).Rights.includes('Administrators');
                     myRes.root.isAuditor = (myRes.root.data.Token as any).Rights.includes('Auditor');
-                    myRes.root.isUserAdmin = (myRes.root.data.Token as any).Rights.includes('UserAdmin');
+                    myRes.root.isUserAdmin = (myRes.root.data.Token as any).Rights.includes('SFT App UserAdmin');
                     myRes.root.isAppMode = myRes.root.isAppMode && !(myRes.root.isCreator || myRes.root.isAdministrator);
                 }
                 if (myRes.root.data.Token.hasOwnProperty('Roles')) {

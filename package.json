@@ -25,6 +25,7 @@
     "keycloak-js": "^18.0.0",
     "moment": "^2.29.4",
     "ng2-pdf-viewer": "^9.1.5",
+    "ngx-device-detector": "^5.0.1",
     "rxjs": "~7.5.0",
     "rxjs-observable-store": "^3.1.0",
     "survey-angular-ui": "^1.9.92",

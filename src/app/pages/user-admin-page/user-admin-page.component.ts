@@ -27,6 +27,10 @@ export class UserAdminPageComponent  implements OnInit {
   constructor  (public ads: ActivedirectoryService ){
   }
 
+  ngAfterViewInit(){
+    console.log()
+  }
+
   ngOnInit () {
     this.populatewards(1);
   }
