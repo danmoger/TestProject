@@ -95,9 +95,7 @@ export class SurveyPage implements OnInit, OnDestroy {
 
   }
 
-  ngAfterViewInit() {
-    // this.appEnv = 'PRD';  // force prd for Live testing
-  }
+
 
   ngOnInit() {
     Survey.FunctionFactory.Instance.register('NumberOfNos', (params) => { return this.Nos; });
@@ -106,7 +104,10 @@ export class SurveyPage implements OnInit, OnDestroy {
       default: '{}',
       category: 'general'
     });
+    this.isResus = false;
+    this.IsMMS = false;
     this.myForm = (this.configService.state.config.root.data as any).formDetail;
+    this.myForm.database.collection = 'submissions';
     this.title = this.myForm.name;
     this.myjson = this.myForm.form;
     this.iAm = this.configService.state.config.root.data.Token.name;
@@ -117,7 +118,8 @@ export class SurveyPage implements OnInit, OnDestroy {
     this.doSurvey = false;
     if (this.isReadOnly !== null) {     // assumption of ONLY mms/2 when readonly?
       this.myjson.pages.find(pg => pg.name === 'mms').readOnly = true;
-      this.formsService.getItemDetailByGUID('mms22', 'submissions', this.ParentGuid).toPromise().then(result => {
+      const dbName = this.nextstate.state.config.root.data['formDetail'].database.dbname;
+      this.formsService.getItemDetailByGUID(dbName, 'submissions', this.ParentGuid).toPromise().then(result => {
         this.data = result.result;
         this.recordedDate = result.date;
         console.log(this.data);
@@ -141,6 +143,8 @@ export class SurveyPage implements OnInit, OnDestroy {
     console.log(this.resultState)
     if (_this.formType !== FormType.mms) {
       _this.isResus = true;
+    } else {
+      _this.isResus = false;
     }
     this.myjson.pages[0].elements[1].defaultValue = _this.formType;
 
@@ -305,7 +309,7 @@ export class SurveyPage implements OnInit, OnDestroy {
       complete: () => {  // build up list of Question Sections to be displayed.
         const _this = this;
         if (_this.isResus) {
-          // is it a YYN style ward
+          // is it a YYN style warD
           let myPageRef = ward.Resus;
           let ynyFlags = '';
           if (ward.Resus.substr(3, 1) === '-') {
@@ -320,6 +324,7 @@ export class SurveyPage implements OnInit, OnDestroy {
           } else {
             this.dbDetails.collection = 'resus';
           }
+
           this.myjson.calculatedValues[0].expression = myPage.name;
           this.myjson.calculatedValues[2].expression = ward.daily.toString();
           this.myjson.calculatedValues[3].expression = ward.Resus.substr(0, 1);
@@ -355,11 +360,11 @@ export class SurveyPage implements OnInit, OnDestroy {
           this.myjson.completeText = 'Back';
         } else {
           if (this.isResus) {
-            this.myjson.title = 'Resus Audit System ' + 'Test'; //this.appEnv;
+            this.myjson.title = 'Resus Audit System ' + this.appEnv;
             this.myjson.description = 'Resus - New entry for ' + ward.wardName + ' on '
               + (new Date().toLocaleDateString('en-GB'));
           } else {
-            this.myjson.title = 'Medicines Management System ' + 'Test'; //tthis.appEnv;
+            this.myjson.title = 'Medicines Management System ' + this.appEnv;
             this.myjson.description = 'MMS  New entry for ' + ward.wardName + ' on '
               + (new Date().toLocaleDateString('en-GB'));
           }
@@ -509,7 +514,15 @@ export class SurveyPage implements OnInit, OnDestroy {
       if (!this.isReadOnly) {
         const myResults: any = {};
         myResults.result = result;
-        delete myResults.result.Domains;
+        myResults.database = this.dbDetails;
+        
+        if (result.hasOwnProperty('Domains')) {
+          myResults.database.collection='submissions'
+          delete myResults.result.Domains;          
+        } else {
+          myResults.database.collection='resus'
+        }
+
         const details: any = {};
         details.name = this.tokenParsed.given_name + ' ' + this.tokenParsed.family_name;
         details.formName = this.nextstate.config.root.formname;
@@ -532,7 +545,7 @@ export class SurveyPage implements OnInit, OnDestroy {
         }
 
 
-        myResults.database = this.dbDetails;
+        // myResults.database = this.dbDetails;
         if (this.configService.state.config.root.currentRole !== null) {
           myResults.ward = this.configService.state.config.root.currentRole;
         }
@@ -550,7 +563,7 @@ export class SurveyPage implements OnInit, OnDestroy {
 
         myResults.details = details;
         this.formsService.postFormResponses(myResults).subscribe(resp => {
-setTimeout( () => {this.router.navigate(['survey'])},2000);
+          setTimeout(() => { this.router.navigate(['survey']) }, 2000);
           console.log(resp, new Date());
           //          this.kc.clearToken();
           //  this.kc.logout().then(() => {
@@ -569,14 +582,14 @@ setTimeout( () => {this.router.navigate(['survey'])},2000);
       //  this.resultData = result;
     }
   }
-  
+
   ngOnDestroy() {
     this.mySubscription?.unsubscribe();
   }
-   delay(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) );
-    }
-  LogoutClicked () {
+  delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  LogoutClicked() {
     this.kc.logout().then(() => {
       this.router.navigate(['/']);
       // this.kc.clearToken();

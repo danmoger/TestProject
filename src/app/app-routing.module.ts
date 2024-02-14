@@ -5,12 +5,11 @@ import { WeeklyComponent } from './pages/reports/weekly/weekly.component';
 import { SurveyPage } from './pages/survey.page/survey.page';
 import { UserAdminPageComponent } from './pages/user-admin-page/user-admin-page.component';
 import { Useradmin2Component } from './pages/useradmin2/useradmin2.component';
-import { SurveyfudgeComponent } from './pages/surveyfudge/surveyfudge.component';
+
 
 const routes: Routes = [
   { path: 'weekly', component: WeeklyComponent },
   { path: 'survey', component: SurveyPage },  
-  { path: 'surveyfudge', component: SurveyfudgeComponent },
   { path: 'manualPage/:page', component: ManualPageComponent },
   { path: 'useradmin', component: UserAdminPageComponent},
   { path: 'useradmin2', component: Useradmin2Component},

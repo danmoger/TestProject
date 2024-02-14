@@ -18,7 +18,7 @@ import { initializer } from '../utils/app-init';
 import { ManualPageComponent } from './pages/manual-page/manual-page.component';
 import { UserAdminPageComponent } from './pages/user-admin-page/user-admin-page.component';
 import { Useradmin2Component } from './pages/useradmin2/useradmin2.component';
-import { SurveyfudgeComponent } from './pages/surveyfudge/surveyfudge.component';
+
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -43,8 +43,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     SurveyPage,
     ManualPageComponent,
     UserAdminPageComponent,
-    Useradmin2Component,
-    SurveyfudgeComponent
+    Useradmin2Component
   ],
   imports: [
     BrowserModule,

@@ -4,7 +4,7 @@ import { map, catchError } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
 import { Observable } from 'rxjs';
 import { ConfigstateService } from 'src/app/services/configstate/configstate.service'
-
+import { environment } from 'src/environments/environment';
 const httpOptions = {
   headers: new HttpHeaders().set('Content-Type', 'application/json').set('Accept', 'application/json')
 };
@@ -14,10 +14,10 @@ const httpOptions = {
 })
 
 export class ActivedirectoryService {
-  adEvn ="UAT";
+  adEvn = environment.appenv.toUpperCase();
   iAm: any;
   constructor(private http: HttpClient, private newConfig: ConfigstateService) {
-    //this.iAm = this.newConfig.state.config.root.data.Token.name;
+    this.iAm = this.newConfig.state.config.root.data.Token.name;
     console.log("ADS Started");
   }
 

@@ -26,9 +26,6 @@ export class FormsService {
 
     constructor(private http: HttpClient, private newConfig: ConfigstateService) {
         moment.locale('en-GB');
-        if (this.appEnv === 'uat') {
-            //    this.resus = 'UAT'; // Forced for Live prod testing
-        }
     }
 
     public getForm(fName: string): any {
@@ -74,7 +71,7 @@ export class FormsService {
     public getItemDetailByGUID(dbName: string, collection: string, guid: string): Observable<any> {
 
         const myUrl = this.newConfig.state.config.root.dataUrl +
-            'mongo/filterCollection?db=' + 'mms22' + '&collection=' + collection + '&filter={%20%22_id%22:%20ObjectId(%22' + guid + '%22)' +
+            'mongo/filterCollection?db=' + dbName + '&collection=' + collection + '&filter={%20%22_id%22:%20ObjectId(%22' + guid + '%22)' +
             '%20}';
         return this.http.get(myUrl).pipe(map(resp => {
             // console.log( resp );
@@ -90,7 +87,7 @@ export class FormsService {
         const dbName = this.newConfig.state.config.root.data['formDetail'].database.dbname;
         const collection = 'resus_view_Last_Weekly' + this.resus;
         const myUrl = this.newConfig.state.config.root.dataUrl +
-            'mongo/filterCollection?db=' + 'mms22' + '&collection=' + collection + '&filter={}'; // NOT 'mms22' use dbName   FRED SAID
+            'mongo/filterCollection?db=' + dbName + '&collection=' + collection + '&filter={}'; 
         return this.http.get(myUrl).pipe(map(resp => {
             // console.log( resp );
             return resp;
@@ -110,7 +107,7 @@ export class FormsService {
             collection = 'resus' + this.resus; // this.newConfig.state.config.root.data['formDetail'].database.collection;
         }
         const myUrl = this.newConfig.state.config.root.dataUrl +
-            'mongo/filterCollection?db=' + 'mms22' + '&collection=' + collection + '&filter={%20%22date%22:%20' + '%22' + today + '%22' +
+            'mongo/filterCollection?db=' + dbName + '&collection=' + collection + '&filter={%20%22date%22:%20' + '%22' + today + '%22' +
             '%20}';
         return this.http.get(myUrl).pipe(map(resp => {
             // console.log( resp );

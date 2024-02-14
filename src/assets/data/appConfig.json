@@ -3,7 +3,7 @@
     "mongoDBURL": "reduntant",
     "keyCloakUrl": "https://sft-sso-01.somersetft.nhs.uk:8443",
     "production": false, 
-    "dataUrl": "https://resusapi.tst.nhs.uk/api/",
+    "dataUrl": "https://mph-mmsapi.tst.nhs.uk/api/",
     "PostFormDataURl": "forms/PostFormData",
     "saveFormDefinition": "forms/SaveFormDefinition",
     "PostWardUpdateDataURL": "ward/update",

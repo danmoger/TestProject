@@ -48,7 +48,9 @@ export function initializer(forms: FormsService, http: HttpClient, keycloak: Key
                         kcConfig = environment.keycloak;
                         if (myFormName != null) {
                             if (myFormName.startsWith('mms')) {
-                                kcConfig.clientId = 'mms-app' + environment.appenv; 
+                                if (environment.appenv !== 'PRD'){
+                                kcConfig.clientId = 'mms-app-' + environment.appenv; 
+                                } else {kcConfig.clientId = 'mms-app'}
                             } else {
                                 kcConfig.clientId = 'forms-app' + environment.appenv;
                             }
@@ -99,7 +101,7 @@ export function initializer(forms: FormsService, http: HttpClient, keycloak: Key
                     if (myRes.root.isAppMode === true) {
                         forms.getForm(myFormName).toPromise().then((resp) => {
                             formDetail = resp;
-                            formDetail['database'].dbname = "mms22";  // Freds fix
+                            // formDetail['database'].dbname = "mms 2 2 ";  // Freds fix
                             myRes.root.data.formDetail = formDetail;
                             console.log(myRes);
                             resolve1('Wahoo');
