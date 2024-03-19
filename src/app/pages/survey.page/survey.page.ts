@@ -347,7 +347,7 @@ export class SurveyPage implements OnInit, OnDestroy {
           this.myjson.pages[2].elements[0].defaultValue = this.myTypes;
           this.myjson.pages[2].elements[0].choices = this.myChoices;
 
-          if (this.rights !== undefined) {
+          if (this.IsMMS && this.rights !== undefined) {
             if (this.rights.includes('App Debug')) {
               this.myjson.pages[2].elements[0].visible = true;
             }
@@ -418,7 +418,7 @@ export class SurveyPage implements OnInit, OnDestroy {
         survey.onUpdateQuestionCssClasses
           .add(function (_survey, options) {
             const classes = options.cssClasses;
-            console.debug(options.question.title);
+            console. debug(options.question.title);
             //                 console.log( _survey, options );
             classes.root = 'sq-root';
             classes.title = 'sq-title';
@@ -515,13 +515,11 @@ export class SurveyPage implements OnInit, OnDestroy {
         const myResults: any = {};
         myResults.result = result;
         myResults.database = this.dbDetails;
-        
+        if ( this.isResus){
         if (result.hasOwnProperty('Domains')) {
-          myResults.database.collection='submissions'
           delete myResults.result.Domains;          
-        } else {
-          myResults.database.collection='resus'
         }
+      }
 
         const details: any = {};
         details.name = this.tokenParsed.given_name + ' ' + this.tokenParsed.family_name;
