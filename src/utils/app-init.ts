@@ -114,7 +114,7 @@ export function initializer(forms: FormsService, http: HttpClient, keycloak: Key
                 const b = await promise2;
                 console.log('Resolved 2');
 
-                myRes.root.data.Token = kk.tokenParsed;
+                myRes.root.data.Token = kk.tokenParsed; 
                 if (myRes.root.data.Token.hasOwnProperty('Rights')) {
                     myRes.root.isCreator = (myRes.root.data.Token as any).Rights.includes('Creator');
                     myRes.root.isAdministrator = (myRes.root.data.Token as any).Rights.includes('Administrators');

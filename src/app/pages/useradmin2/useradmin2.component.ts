@@ -80,7 +80,7 @@ export class Useradmin2Component {
       const __this = this;
       // " MMS - Entry Comm-Ash Ward"
       // " Resus - "
-      _this.wards = d.filter(x => { return (x.name.indexOf(this.formType) === 0 && x.name.indexOf("YDH") === -1) });
+      _this.wards = d.filter(x => { return (x.name.indexOf(this.formType) === 0 && x.name.indexOf("YDH!") === -1) });
       _this.wards.forEach((x: any) => { x.name = x.name.substring(this.formType.length, 99); });
 
       _this.GotWards = true;
