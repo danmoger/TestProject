@@ -15,6 +15,6 @@ export class DirectoratesService {
     constructor(private http: HttpClient) { }
 
     public GetAllDirectorates(): Observable<any> {
-        return this.http.get(environment.dataUrl + 'directorate').pipe(map(res => res));
+        return this.http.get("dataUrl" + 'directorate').pipe(map(res => res));
     }
 }

@@ -49,13 +49,13 @@ export function initializer(forms: FormsService, http: HttpClient, keycloak: Key
                         if (myFormName != null) {
                             if (myFormName.startsWith('mms')) {
                                 if (environment.appenv !== 'PRD'){
-                                kcConfig.clientId = 'mms-app-' + environment.appenv; 
+                                kcConfig.clientId = 'mms-app-' + environment.appenv.toLowerCase(); 
                                 } else {kcConfig.clientId = 'mms-app'}
                             } else {
-                                kcConfig.clientId = 'forms-app' + environment.appenv;
+                                kcConfig.clientId = 'forms-app' + environment.appenv.toLowerCase();
                             }
                         } else {
-                            kcConfig.clientId = 'forms-app' + environment.appenv;
+                            kcConfig.clientId = 'forms-app' + environment.appenv.toLowerCase();
                         }
                         if (isDevMode()) {
                             // kcConfig.url = myRes.root.keyCloakUrl;
@@ -95,6 +95,8 @@ export function initializer(forms: FormsService, http: HttpClient, keycloak: Key
                                 };
                 */
                 console.log('init');
+                myRes.root.dataUrl = environment.dataUrl;
+                appConfig.updateState({ config: myRes }, 'init 99');
                 const kk = keycloak.getKeycloakInstance();
                 console.log(JSON.stringify(kk.tokenParsed, null, 2));
                 const promise2 = new Promise((resolve1, reject1) => {
@@ -122,6 +124,7 @@ export function initializer(forms: FormsService, http: HttpClient, keycloak: Key
                     myRes.root.isUserAdmin = (myRes.root.data.Token as any).Rights.includes('SFT App UserAdmin');
                     myRes.root.isAppMode = myRes.root.isAppMode && !(myRes.root.isCreator || myRes.root.isAdministrator);
                 }
+                
                 if (myRes.root.data.Token.hasOwnProperty('Roles')) {
                     // tslint:disable-next-line: max-line-length
                     if ((myRes.root.isResusEnabled) && (myRes.root.data.Token.Roles.findIndex(element => element.includes('Resus - ')) !== -1)) {

@@ -29,7 +29,7 @@ export class MyFormsService {
     public getTodaysResusShortList(){
         const collection = 'resus_view_Last_Weekly' + this.resus;
         const dbName = this.newConfig.state.config.root.data['formDetail'].database.dbname;
-        const myUrl = environment.dataUrl +
+        const myUrl = this.newConfig.state.config.root.dataUrl  +
             'mongo/filterCollection?db=' + dbName + '&collection=' + collection + '&filter={}';
         return this.http.get(myUrl).pipe(map(resp => {
             // console.log( resp );
@@ -40,17 +40,17 @@ export class MyFormsService {
         }));
     }
 
-    public getForm():any{
-        const myUrl = 'http://formsauthapitest.tst.nhs.uk/api/mongo/filterCollection?db=forms&collection=PublishedForms&filter=%7B%22_id%22%3A%22MMS2COMBINED2%22%7D';
-        return this.http.get(myUrl).pipe(map((resp: any) => {
-            const data = resp[0];
+ //   public getForm():any{
+//        const myUrl = 'http://formsauthapitest.tst.nhs.uk/api/mongo/filterCollection?db=forms&collection=PublishedForms&filter=%7B%22_id%22%3A%22MMS2COMBINED2%22%7D';
+//        return this.http.get(myUrl).pipe(map((resp: any) => {
+//            const data = resp[0];
             //console.log(data);
-            return data.Root;
-        }), catchError(err => {
-            console.log(err);
-            return of([]);
-        }));
-    }
+//            return data.Root;
+ //       }), catchError(err => {
+//            console.log(err);
+ //           return of([]);
+ //       }));
+ //   }
 
     public saveForm(data: any): any {
         const myUrl = this.newConfig.state.config.root.dataUrl + this.newConfig.state.config.root.saveFormDefinition;
