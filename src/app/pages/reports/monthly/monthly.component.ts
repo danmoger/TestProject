@@ -3,11 +3,11 @@ import { FormsService } from 'src/app/services/forms/forms.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-    selector: 'app-weekly',
-    templateUrl: './weekly.component.html',
-    styleUrls: ['./weekly.component.css']
+    selector: 'app-monthly',
+    templateUrl: './monthly.component.html',
+    styleUrls: ['./monthly.component.css']
 })
-export class WeeklyComponent implements OnInit {
+export class monthlyComponent implements OnInit {
 
     ready = false;
     reportsList: any;

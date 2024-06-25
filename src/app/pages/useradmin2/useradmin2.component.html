@@ -8,16 +8,16 @@
     <div *ngIf="this.formType==='none'; then showSelector else showconsole">
     </div>
     <ng-template #showSelector>
-        <div id="outPopUp" class="d-none d-xl-block">
+        <div id="outPopUp" >
             <div>
-                <div class="center text-warning">Welcome {{this.iAm}}</div>
-                <div class="center text-warning">
+                <div class="center text-dark">Welcome {{this.iAm}}</div>
+                <div class="center text-dark">
                     <input [disabled]="this.formType !== 'none'" type="radio" id="MMS" name="formType"
                         value=" MMS - Entry " (change)="FormTypeChanged($event)">
                     <label for="MMS">&nbsp;&nbsp;MMS&nbsp;&nbsp;&nbsp;</label>
                     <input [disabled]="this.formType !== 'none'" type="radio" id="RESUS" name="formType"
                         value=" Resus - " (change)="FormTypeChanged($event)">
-                    <label for="DAILY">&nbsp;&nbsp;Resus</label>
+                    <label for="RESUS">&nbsp;&nbsp;Resus</label>
                 </div>
             </div>
         </div>
@@ -28,7 +28,7 @@
         <div class="row">
             <div class="col-md-12">
                 <h1 class="center text-info">
-                    User Admin console for {{this.formType}} V4
+                    User Admin console for {{this.formType}} V6
                 </h1>
             </div>
         </div>

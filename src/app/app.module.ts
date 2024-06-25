@@ -11,7 +11,7 @@ import { ConfigstateService } from './services/configstate/configstate.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './_top/header/header.component';
-import { WeeklyComponent } from './pages/reports/weekly/weekly.component';
+import { monthlyComponent } from './pages/reports/monthly/monthly.component';
 import { SurveyPage } from './pages/survey.page/survey.page'
 
 import { initializer } from '../utils/app-init';
@@ -39,7 +39,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
   declarations: [
     AppComponent,
     HeaderComponent,
-    WeeklyComponent,
+    monthlyComponent,
     SurveyPage,
     ManualPageComponent,
     UserAdminPageComponent,

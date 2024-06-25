@@ -1,6 +1,6 @@
 export enum FormType {
     mms = 'MMS',
-    weeklyResus = 'Resus Weekly Checks',
+    MonthlyResus = 'Resus Monthly Checks',
     DailyResus = 'Resus Daily Checks',
     none = 'none'
 }

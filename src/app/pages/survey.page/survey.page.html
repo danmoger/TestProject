@@ -34,9 +34,9 @@
         <input [disabled]="this.formType !== 'none'" type="radio" id="DAILY" name="formType" value="Resus Daily Checks"
           (change)="changeformType($event)">
         <label for="DAILY">&nbsp;&nbsp;<b>Resus Daily</b>&nbsp;&nbsp;&nbsp;</label>
-        <input [disabled]="this.formType !== 'none'" type="radio" id="WEEKLY" name="formType"
-          value="Resus Weekly Checks" (change)="changeformType($event)">
-        <label for="WEEKLY">&nbsp;&nbsp;<b>Resus Weekly</b></label>
+        <input [disabled]="this.formType !== 'none'" type="radio" id="MONTHLY" name="formType"
+          value="Resus Monthly Checks" (change)="changeformType($event)">
+        <label for="MONTHLY">&nbsp;&nbsp;<b>Resus Monthly</b></label>
       </ng-container>
     </div><br>
     <div *ngIf="showWards">
@@ -50,7 +50,7 @@
       <button #logout class="SelectButtons" [ngClass]="{'buttonEnabled': true}" [style.width.px]="80" (click)="LogoutClicked()" >Logout</button>
       <button #okButton class="ok SelectButtons" [disabled]="!okEnabled" [style.width.px]="80" (click)="onClickDoWard($event)" [ngClass]="{'buttonEnabled': okEnabled, 'buttonDisabled': !okEnabled}">OK</button>
       <button #dashBoardButton class="Report SelectButtons" [style.width.px]="120" (click)="onClickreport($event)" [disabled]="!showWards" [ngClass]="{'buttonEnabled': resultState, 'buttonDisabled': !resultState}">Dashboard</button>
-      <button *ngIf="isResus" #Weeklystats class="Weeklystats SelectButtons" [style.width.px]="100" (click)="onClickWeekly($event)" [disabled]="!showWards" [ngClass]="{'buttonEnabled': resultState, 'buttonDisabled': !resultState}">Weeklys</button>
+      <button *ngIf="isResus" #monthlystats class="Weeklystats SelectButtons" [style.width.px]="100" (click)="onClickMonthly($event)" [disabled]="!showWards" [ngClass]="{'buttonEnabled': resultState, 'buttonDisabled': !resultState}">Weeklys</button>
     </div>
   </div>
 </ng-template>

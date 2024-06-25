@@ -53,6 +53,7 @@ export class SurveyPage implements OnInit, OnDestroy {
   doSurvey = false;
   iAm: any;
   offset = 1;
+  myPage: any;
   isResus = false;
   myTypes = [];
   myChoices = [];
@@ -180,7 +181,7 @@ export class SurveyPage implements OnInit, OnDestroy {
               } else {
                 let newLabel = value;
 
-                if (data.some(e => e.result['Target Form'] === 'Resus Weekly Checks' && e.ward === tmp) === true) {
+                if (data.some(e => e.result['Target Form'] === 'Resus Monthly Checks' && e.ward === tmp) === true) {
                   newLabel = newLabel + '***';
                 }
                 if (data.some(e => e.result['Target Form'] === 'Resus Daily Checks' && e.ward === tmp) === true) {
@@ -310,14 +311,22 @@ export class SurveyPage implements OnInit, OnDestroy {
         const _this = this;
         if (_this.isResus) {
           // is it a YYN style warD
-          let myPageRef = ward.Resus;
+          let myPageRef = '';
           let ynyFlags = '';
+          
+          if ( this.nextstate.config.root.FormOverride === '') { // Old way to do itward.Resus;
+
           if (ward.Resus.substr(3, 1) === '-') {
             myPageRef = ward.Resus.slice(4);
             ynyFlags = ward.Resus.substr(0, 3);
           }
-          const myPage = this.myjson.pages.find(x => x.name === myPageRef);
-          myPage.visible = true;
+            
+        } else {
+          myPageRef = this.nextstate.config.root.FormOverride;
+          ynyFlags = 'NNN';
+        }
+        this.myPage = this.myjson.pages.find(x => x.name === myPageRef);
+          this.myPage.visible = true;
           this.myjson.pages[0].visible = false;
           if (this.appEnv === 'uat') {
             this.dbDetails.collection = 'resusUAT';
@@ -325,11 +334,11 @@ export class SurveyPage implements OnInit, OnDestroy {
             this.dbDetails.collection = 'resus';
           }
 
-          this.myjson.calculatedValues[0].expression = myPage.name;
+          this.myjson.calculatedValues[0].expression = this.myPage.name;
           this.myjson.calculatedValues[2].expression = ward.daily.toString();
-          this.myjson.calculatedValues[3].expression = ward.Resus.substr(0, 1);
-          this.myjson.calculatedValues[4].expression = ward.Resus.substr(1, 1);
-          this.myjson.calculatedValues[5].expression = ward.Resus.substr(2, 1);
+          this.myjson.calculatedValues[3].expression = ward.Resus.substr(0, 1); // can go
+          this.myjson.calculatedValues[4].expression = ward.Resus.substr(1, 1); // can go
+          this.myjson.calculatedValues[5].expression = ward.Resus.substr(2, 1); // can go
           this.myjson.calculatedValues[6].expression = '\'' + ward.wardName.substring(8, 99).toString() + '\'';
           // this.dbDetails = this.myForm.database
 
@@ -463,7 +472,7 @@ export class SurveyPage implements OnInit, OnDestroy {
     // Change to allow all IF isResus === true
     if (selectedIndex !== 0) {
       this.dataValues = this.options[selectedIndex];
-      if (((this.dataValues.label[0] === '*') && (this.formType !== FormType.weeklyResus))) {
+      if (((this.dataValues.label[0] === '*') && (this.formType !== FormType.MonthlyResus))) {
         this.okEnabled = false;
         //this.okState = 'it not ok';
       } else {
@@ -476,10 +485,10 @@ export class SurveyPage implements OnInit, OnDestroy {
     }
   }
 
-  onClickWeekly($event) {
+  onClickMonthly($event) {
     if (this.formType === 'MMS') {
     } else {
-      this.router.navigate(['weekly']);
+      this.router.navigate(['Monthly']);
     }
   }
 
