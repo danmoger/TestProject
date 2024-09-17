@@ -50,7 +50,9 @@
       <button #logout class="SelectButtons" [ngClass]="{'buttonEnabled': true}" [style.width.px]="80" (click)="LogoutClicked()" >Logout</button>
       <button #okButton class="ok SelectButtons" [disabled]="!okEnabled" [style.width.px]="80" (click)="onClickDoWard($event)" [ngClass]="{'buttonEnabled': okEnabled, 'buttonDisabled': !okEnabled}">OK</button>
       <button #dashBoardButton class="Report SelectButtons" [style.width.px]="120" (click)="onClickreport($event)" [disabled]="!showWards" [ngClass]="{'buttonEnabled': resultState, 'buttonDisabled': !resultState}">Dashboard</button>
+    <!--
       <button *ngIf="isResus" #monthlystats class="Weeklystats SelectButtons" [style.width.px]="100" (click)="onClickMonthly($event)" [disabled]="!showWards" [ngClass]="{'buttonEnabled': resultState, 'buttonDisabled': !resultState}">Weeklys</button>
+      -->
     </div>
   </div>
 </ng-template>

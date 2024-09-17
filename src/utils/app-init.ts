@@ -103,7 +103,6 @@ export function initializer(forms: FormsService, http: HttpClient, keycloak: Key
                     if (myRes.root.isAppMode === true) {
                         forms.getForm(myFormName).toPromise().then((resp) => {
                             formDetail = resp;
-                            // formDetail['database'].dbname = "mms 2 2 ";  // Freds fix
                             myRes.root.data.formDetail = formDetail;
                             console.log(myRes);
                             resolve1('Wahoo');

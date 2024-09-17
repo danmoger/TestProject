@@ -11,14 +11,7 @@ import { Router } from '@angular/router';
 })
 export class Useradmin2Component {
 
-  //@ViewChildren('adduserbit') ref: QueryList<any>;
-
-  /* @ViewChild('inputEmail') set inputEmail(
-     elementRef: ElementRef<HTMLInputElement> | undefined
-   ) {
-     console.log(elementRef);
-   }
-  */
+  
   iAm: any;
   GotUser= false;
   ListBoxUsers: any;
@@ -97,7 +90,7 @@ export class Useradmin2Component {
 
   ClickedAddUserBtn() {
 
-    this.addingUser = true;  //Fred needs to finish
+    this.addingUser = true; 
   }
 
   ClickedRemoveUserBtn() {
